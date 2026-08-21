@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+@theme {
+    --color-ink: #0e0e11;
+    --color-surface: #17171b;
+    --color-raised: #1e1e24;
+    --color-line: #2a2a31;
+    --color-fg: #ededef;
+    --color-muted: #8a8a92;
+
+    --color-iris: #9747d2;
+    --color-cobalt: #2a35d6;
+    --color-azure: #19b5e0;
+    --color-magenta: #ff2c9a;
+    --color-gold: #dea306;
+    --color-acid: #e4f06b;
+    --color-mint: #11e93f;
+
+    --animate-rise: rise 0.5s ease-out both;
+    --animate-shimmer: shimmer 1.8s linear infinite;
+    --animate-float: float 7s ease-in-out infinite;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes shimmer {
+    from {
+        background-position: -200% 0;
+    }
+    to {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+}
+
+*:focus-visible {
+    outline: 2px solid var(--color-iris);
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+
+.canvas-grid {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 26px 26px;
+}
+
+input[type='range'] {
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-line);
+}
+
+input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: var(--color-fg);
+    cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
