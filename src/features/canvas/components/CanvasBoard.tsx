@@ -1,77 +1,133 @@
-import Link from "next/link";
-import CanvasLinks from "./CanvasLinks";
-import WebAnswerCard from "./cards/WebAnswerCard";
-import ChartCard from "./cards/ChartCard";
-import ImageCard from "./cards/ImageCard";
-import DocCard from "./cards/DocCard";
-import RecommendationsCard from "./cards/RecommendationsCard";
-import LoadingCard from "@/features/states/LoadingCard";
+"use client";
 
-export default function CanvasBoard() {
+import { useEffect, useMemo, useState } from "react";
+import {
+  Background,
+  BackgroundVariant,
+  Connection,
+  MiniMap,
+  NodeChange,
+  ReactFlow,
+  ReactFlowProvider,
+  useReactFlow,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useCanvasStore } from "@/stores/canvas-store";
+import { useCanvasActions } from "../hooks/useCanvasActions";
+import { CanvasData, CardType } from "../types";
+import { nodeTypes } from "./nodes";
+import { CardNode } from "./nodes/types";
+import CommandBar from "./CommandBar";
+import ZoomControl from "./ZoomControl";
+import CanvasEmptyState from "./CanvasEmptyState";
+
+type CanvasBoardProps = {
+  initial: CanvasData;
+  defaultMode: CardType;
+  showGrid: boolean;
+  lastViewport: { x: number; y: number; zoom: number };
+};
+
+function CanvasInner({ initial, defaultMode, showGrid, lastViewport }: CanvasBoardProps) {
+  const init = useCanvasStore((state) => state.init);
+  const cards = useCanvasStore((state) => state.cards);
+  const edges = useCanvasStore((state) => state.edges);
+  const updateCard = useCanvasStore((state) => state.updateCard);
+  const setActiveCardId = useCanvasStore((state) => state.setActiveCardId);
+
+  const { connect, remove, savePosition } = useCanvasActions();
+  const { setViewport } = useReactFlow();
+  
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    init(initial);
+    setTimeout(() => {
+      setViewport(lastViewport, { duration: 0 });
+      setReady(true);
+    }, 50);
+  }, [init, initial, lastViewport, setViewport]);
+
+  const nodes: CardNode[] = useMemo(
+    () =>
+      cards.map((card) => ({
+        id: card.id,
+        type: card.type,
+        position: { x: card.x, y: card.y },
+        data: { card },
+      })),
+    [cards]
+  );
+
+  const flowEdges = useMemo(
+    () =>
+      edges.map((edge) => ({
+        id: edge.id,
+        source: edge.sourceId,
+        target: edge.targetId,
+        animated: true,
+      })),
+    [edges]
+  );
+
+  function onNodesChange(changes: NodeChange<CardNode>[]) {
+    changes.forEach((change) => {
+      if (change.type === "position" && change.position) {
+        updateCard(change.id, { x: change.position.x, y: change.position.y });
+      }
+      if (change.type === "select" && change.selected) {
+        setActiveCardId(change.id);
+      }
+    });
+  }
+
+  function onConnect(connection: Connection) {
+    if (connection.source && connection.target) connect(connection.source, connection.target);
+  }
+
+  function onMoveEnd(_: unknown, viewport: { x: number; y: number; zoom: number }) {
+    fetch("/api/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lastX: viewport.x, lastY: viewport.y, lastZoom: viewport.zoom }),
+    });
+  }
+
   return (
-    <>
-      <div className="space-y-4 px-4 py-6 lg:hidden">
-        <Link href="/canvas/web" className="block animate-rise">
-          <WebAnswerCard />
-        </Link>
-        <Link href="/canvas/image" className="block animate-rise [animation-delay:80ms]">
-          <ImageCard />
-        </Link>
-        <div className="animate-rise [animation-delay:160ms]">
-          <ChartCard />
-        </div>
-        <Link href="/canvas/document" className="block animate-rise [animation-delay:240ms]">
-          <DocCard />
-        </Link>
-        <Link href="/canvas/recommendations" className="block animate-rise [animation-delay:320ms]">
-          <RecommendationsCard />
-        </Link>
-        <div className="animate-rise [animation-delay:400ms]">
-          <LoadingCard />
-        </div>
+    <div className={`relative h-svh transition-opacity duration-150 ${ready ? "opacity-100" : "opacity-0"}`}>
+      <div className="absolute inset-x-0 top-0 z-20 px-4 py-4 md:px-8">
+        <CommandBar defaultMode={defaultMode} />
       </div>
 
-      <div className="hidden overflow-auto px-8 py-8 lg:block">
-        <div className="relative h-[780px] w-[1120px]">
-          <CanvasLinks />
+      <ReactFlow
+        nodes={nodes}
+        edges={flowEdges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onNodeDragStop={(_, node) => savePosition(node.id, node.position.x, node.position.y)}
+        onNodesDelete={(deleted) => deleted.forEach((node) => remove(node.id))}
+        onConnect={onConnect}
+        onMoveEnd={onMoveEnd}
+        deleteKeyCode="Delete"
+        minZoom={0.3}
+        maxZoom={2}
+        proOptions={{ hideAttribution: true }}
+      >
+        {showGrid ? <Background variant={BackgroundVariant.Dots} gap={26} size={1} /> : null}
+        <MiniMap pannable zoomable className="!hidden lg:!block" />
+      </ReactFlow>
 
-          <Link
-            href="/canvas/web"
-            className="absolute left-0 top-0 block w-[300px] animate-rise transition-transform duration-300 hover:-translate-y-1"
-          >
-            <WebAnswerCard />
-          </Link>
+      {cards.length === 0 ? <CanvasEmptyState /> : null}
 
-          <div className="absolute left-[380px] top-0 w-[320px] animate-rise [animation-delay:80ms] transition-transform duration-300 hover:-translate-y-1">
-            <ChartCard />
-          </div>
+      <ZoomControl />
+    </div>
+  );
+}
 
-          <Link
-            href="/canvas/image"
-            className="absolute left-[760px] top-0 block w-[300px] animate-rise [animation-delay:160ms] transition-transform duration-300 hover:-translate-y-1"
-          >
-            <ImageCard />
-          </Link>
-
-          <Link
-            href="/canvas/document"
-            className="absolute left-0 top-[320px] block w-[300px] animate-rise [animation-delay:240ms] transition-transform duration-300 hover:-translate-y-1"
-          >
-            <DocCard />
-          </Link>
-
-          <Link
-            href="/canvas/recommendations"
-            className="absolute left-[420px] top-[500px] block w-[340px] animate-rise [animation-delay:320ms] transition-transform duration-300 hover:-translate-y-1"
-          >
-            <RecommendationsCard />
-          </Link>
-
-          <div className="absolute left-[800px] top-[420px] w-[280px] animate-rise [animation-delay:400ms]">
-            <LoadingCard />
-          </div>
-        </div>
-      </div>
-    </>
+export default function CanvasBoard(props: CanvasBoardProps) {
+  return (
+    <ReactFlowProvider>
+      <CanvasInner {...props} />
+    </ReactFlowProvider>
   );
 }

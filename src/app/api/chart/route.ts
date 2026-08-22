@@ -10,7 +10,14 @@ export const maxDuration = 30;
 
 const chartSchema = z.object({
   title: z.string(),
-  points: z.array(z.object({ label: z.string(), value: z.number() })).min(3).max(8),
+  points: z.array(
+    z.object({
+      label: z.string(),
+      value: z.number().min(0).max(100),
+    })
+  )
+    .min(3)
+    .max(8),
 });
 
 export async function POST(req: NextRequest) {
@@ -31,7 +38,7 @@ export async function POST(req: NextRequest) {
     schema: chartSchema,
     prompt: [
       context ? `Data from linked cards:\n${context}` : "",
-      `Build a small bar chart for: ${prompt}`,
+      `Build a small bar chart for: ${prompt}. Use relative values from 0 to 100, not absolute numbers.`,
     ]
       .filter(Boolean)
       .join("\n\n"),

@@ -25,6 +25,7 @@ export function useCanvasActions() {
   const savePosition = useDebouncedCallback((id: string, x: number, y: number) => {
     fetch(`/api/cards/${id}`, {
       method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ x, y }),
     });
   }, 800);
@@ -37,6 +38,7 @@ export function useCanvasActions() {
 
     const res = await fetch(`/api/canvas/${canvasId}/cards`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type, title, prompt, x, y }),
     });
 
@@ -57,6 +59,7 @@ export function useCanvasActions() {
 
     const res = await fetch("/api/search", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cardId: card.id, prompt: card.prompt }),
     });
 
@@ -88,6 +91,7 @@ export function useCanvasActions() {
 
     const res = await fetch("/api/chart", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cardId: card.id, prompt: card.prompt }),
     });
 
@@ -125,6 +129,7 @@ export function useCanvasActions() {
 
     const res = await fetch(`/api/canvas/${canvasId}/cards`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: card.type,
         title: card.title,
@@ -146,6 +151,7 @@ export function useCanvasActions() {
   async function connect(sourceId: string, targetId: string) {
     const res = await fetch("/api/edges", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ canvasId, sourceId, targetId }),
     });
 

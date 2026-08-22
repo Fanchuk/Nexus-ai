@@ -91,3 +91,34 @@ input[type='range']::-webkit-slider-thumb {
         transition: none !important;
     }
 }
+
+.react-flow__attribution {
+    display: none;
+}
+
+.react-flow__handle {
+    width: 8px;
+    height: 8px;
+    border: none;
+    background: var(--color-line);
+}
+
+.react-flow__handle:hover {
+    background: var(--color-iris);
+}
+
+.react-flow__edge-path {
+    stroke: var(--color-muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 6;
+}
+
+.react-flow__minimap {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+}
+
+.react-flow__node {
+    cursor: grab;
+}

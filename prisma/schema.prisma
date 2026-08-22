@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 enum CardType {
@@ -34,6 +34,7 @@ model User {
   settings      Settings?
   canvases      Canvas[]
   prompts       Prompt[]
+  usage         Usage[]
 
   @@map("user")
 }
@@ -97,6 +98,9 @@ model Settings {
   imageStyle  String  @default("cinematic")
   answerLang  String  @default("en")
   defaultMode String  @default("WEB")
+  lastZoom    Float   @default(1)
+  lastX       Float   @default(0)
+  lastY       Float   @default(0)
 }
 
 model Canvas {
@@ -148,5 +152,23 @@ model Prompt {
   canvas    Canvas?  @relation(fields: [canvasId], references: [id], onDelete: Cascade)
   mode      CardType
   text      String
+  createdAt DateTime @default(now())
+}
+
+model Usage {
+  id           String @id @default(cuid())
+  userId       String
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month        String
+  textRequests Int    @default(0)
+  images       Int    @default(0)
+  indexedPages Int    @default(0)
+
+  @@unique([userId, month])
+}
+
+model SearchCache {
+  query     String   @id
+  results   Json
   createdAt DateTime @default(now())
 }

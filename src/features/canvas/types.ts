@@ -3,7 +3,9 @@ export type CardStatus = "PENDING" | "STREAMING" | "DONE" | "ERROR";
 
 export type CardData = {
   answer?: string;
-  sources?: { title: string; link: string; domain: string }[];
+  sources?: { title: string; link: string; domain: string; snippet: string }[];
+  thread?: { question: string; answer: string }[];
+  isSaved?: boolean;
   points?: { label: string; value: number }[];
   urls?: string[];
   summary?: string;

@@ -41,4 +41,4 @@ export const CARD_CONFIG: Record<
   },
 };
 
-export const PALETTE_MODES: CardType[] = ["WEB", "CHART", "IMAGE", "DOC"]
+export const PALETTE_MODES: CardType[] = ["WEB", "CHART", "IMAGE", "DOC"];

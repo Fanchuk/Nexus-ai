@@ -10,21 +10,39 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const body = await req.json();
-
+  
+  const body = await req.text();
   const data: Prisma.CardUpdateManyMutationInput = {};
-  if (typeof body.x === "number") data.x = body.x;
-  if (typeof body.y === "number") data.y = body.y;
-  if (typeof body.title === "string") data.title = body.title;
-  if (body.status) data.status = body.status;
-  if (body.data) data.data = body.data;
+  
+  if (body) {
+    const parsed = JSON.parse(body);
+    if (typeof parsed.x === "number") data.x = parsed.x;
+    if (typeof parsed.y === "number") data.y = parsed.y;
+    if (typeof parsed.title === "string") data.title = parsed.title;
+    if (parsed.status) data.status = parsed.status;
+    if (parsed.data) data.data = parsed.data;
+  }
 
-  const result = await prisma.card.updateMany({
-    where: { id, canvas: { userId: user.id } },
-    data,
-  });
+  if (Object.keys(data).length > 0) {
+    const result = await prisma.card.updateMany({
+      where: { id, canvas: { userId: user.id } },
+      data,
+    });
 
-  if (!result.count) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!result.count) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    const card = await prisma.card.findFirst({
+      where: { id },
+      select: { canvasId: true },
+    });
+
+    if (card) {
+      await prisma.canvas.update({
+        where: { id: card.canvasId },
+        data: { updatedAt: new Date() },
+      });
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

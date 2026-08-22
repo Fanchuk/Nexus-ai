@@ -19,6 +19,11 @@ export default async function CanvasScreen() {
       initial={canvas}
       defaultMode={(settings?.defaultMode ?? "WEB") as CardType}
       showGrid={settings?.showGrid ?? true}
+      lastViewport={{
+        x: settings?.lastX ?? 0,
+        y: settings?.lastY ?? 0,
+        zoom: settings?.lastZoom ?? 1,
+      }}
     />
   );
 }
