@@ -1,20 +1,25 @@
-export function AuthField({
-  label,
-  type = "text",
-  placeholder,
-}: {
+"use client";
+
+import { forwardRef, InputHTMLAttributes } from "react";
+
+type AuthFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  type?: string;
-  placeholder: string;
-}) {
-  return (
+  error?: string;
+};
+
+const AuthField = forwardRef<HTMLInputElement, AuthFieldProps>(
+  ({ label, error, ...props }, ref) => (
     <label className="block">
-      <span className="mb-2 block text-sm text-white/70">{label}</span>
+      <span className="mb-2 block text-sm text-muted">{label}</span>
       <input
-        type={type}
-        placeholder={placeholder}
-        className="w-full rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition-colors duration-300 placeholder:text-white/35 focus:border-[#9747d2]/70 focus:bg-white/[0.07]"
+        ref={ref}
+        {...props}
+        className="w-full rounded-xl border border-line bg-raised px-4 py-3 text-sm outline-none transition-colors focus:border-iris/60"
       />
+      {error ? <span className="mt-1 block text-xs text-magenta">{error}</span> : null}
     </label>
-  );
-}
+  )
+);
+
+AuthField.displayName = "AuthField";
+export default AuthField;

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AuthShell } from "@/features/auth/components/AuthShell";
 import { SignInForm } from "@/features/auth/components/SignInForm";
 
-export default function SignInPage() {
+export default function Page() {
   return (
     <AuthShell
       title="Welcome back"
@@ -10,7 +10,7 @@ export default function SignInPage() {
       footer={
         <>
           New here?{" "}
-          <Link href="/sign-up" className="text-[#b18cff] transition-colors hover:text-white">
+          <Link href="/sign-up" className="text-iris hover:underline">
             Create an account
           </Link>
         </>

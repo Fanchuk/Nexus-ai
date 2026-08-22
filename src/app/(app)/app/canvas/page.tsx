@@ -1,4 +1,5 @@
-import CanvasPage from '@/features/canvas/CanvasPage'
+import CanvasScreen from "@/features/canvas/server/CanvasScreen";
+
 export default function Page() {
-    return <CanvasPage />
+  return <CanvasScreen />;
 }

@@ -1,11 +1,9 @@
-import "../marketing.css";
-import { AnimatedBackground } from "@/features/landing/components/AnimatedBackground";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative min-h-svh overflow-hidden">
-      <AnimatedBackground />
-      {children}
-    </div>
-  );
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) redirect("/app/canvas");
+  return <>{children}</>;
 }

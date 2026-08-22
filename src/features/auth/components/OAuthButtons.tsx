@@ -1,24 +1,23 @@
-const providers = ["Google", "GitHub"];
+"use client";
 
-export function OAuthButtons() {
+import { signIn } from "@/lib/auth-client";
+
+export default function OAuthButtons({ callbackUrl }: { callbackUrl: string }) {
+  function oauth(provider: "google" | "github") {
+    signIn.social({ provider, callbackURL: callbackUrl });
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        {providers.map((provider) => (
-          <button
-            key={provider}
-            className="rounded-xl border border-white/12 bg-white/[0.04] py-3 text-sm text-white/85 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.09]"
-          >
-            {provider}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-white/10" />
-        <span className="text-xs text-white/40">or</span>
-        <span className="h-px flex-1 bg-white/10" />
-      </div>
+    <div className="grid grid-cols-2 gap-3">
+      {(["google", "github"] as const).map((provider) => (
+        <button
+          key={provider}
+          onClick={() => oauth(provider)}
+          className="rounded-xl border border-line bg-surface py-3 text-sm capitalize transition-colors hover:bg-raised"
+        >
+          {provider === "github" ? "GitHub" : "Google"}
+        </button>
+      ))}
     </div>
   );
 }

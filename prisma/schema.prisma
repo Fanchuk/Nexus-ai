@@ -1,13 +1,152 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+}
+
+enum CardType {
+  WEB
+  CHART
+  IMAGE
+  DOC
+  RECS
+}
+
+enum CardStatus {
+  PENDING
+  STREAMING
+  DONE
+  ERROR
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  settings      Settings?
+  canvases      Canvas[]
+  prompts       Prompt[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  issuer                String?
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Settings {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme       String  @default("dark")
+  accent      String  @default("iris")
+  showGrid    Boolean @default(true)
+  textModel   String  @default("balanced")
+  imageStyle  String  @default("cinematic")
+  answerLang  String  @default("en")
+  defaultMode String  @default("WEB")
+}
+
+model Canvas {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String     @default("Untitled canvas")
+  cards     Card[]
+  edges     CardEdge[]
+  prompts   Prompt[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Card {
+  id        String     @id @default(cuid())
+  canvasId  String
+  canvas    Canvas     @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  type      CardType
+  status    CardStatus @default(PENDING)
+  title     String
+  prompt    String     @default("")
+  x         Float      @default(0)
+  y         Float      @default(0)
+  data      Json       @default("{}")
+  outgoing  CardEdge[] @relation("SourceCard")
+  incoming  CardEdge[] @relation("TargetCard")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CardEdge {
+  id       String @id @default(cuid())
+  canvasId String
+  canvas   Canvas @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  sourceId String
+  source   Card   @relation("SourceCard", fields: [sourceId], references: [id], onDelete: Cascade)
+  targetId String
+  target   Card   @relation("TargetCard", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, targetId])
+}
+
+model Prompt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  canvasId  String?
+  canvas    Canvas?  @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  mode      CardType
+  text      String
+  createdAt DateTime @default(now())
 }
