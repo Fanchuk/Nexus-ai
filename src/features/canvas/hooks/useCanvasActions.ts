@@ -166,6 +166,16 @@ export function useCanvasActions() {
     generateChart(chart);
   }
 
+  async function createRecommendations() {
+    const center = screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+
+    const card = await createCard("RECS", "", center.x - 150, center.y + 120);
+    if (card) router.push(`/app/canvas/recommendations?card=${card.id}`);
+  }
+
   function expand(card: CanvasCard) {
     const href = CARD_CONFIG[card.type].href;
     if (href) router.push(`${href}?card=${card.id}`);
@@ -182,6 +192,7 @@ export function useCanvasActions() {
     remove,
     connect,
     turnIntoChart,
+    createRecommendations,
     expand,
     savePosition,
     findCard,

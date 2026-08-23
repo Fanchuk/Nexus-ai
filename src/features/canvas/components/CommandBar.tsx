@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { Plus, Sparkles } from "lucide-react";
+import { Lightbulb, Plus, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCanvasStore } from "@/stores/canvas-store";
+import { useCanvasActions } from "../hooks/useCanvasActions";
 import { CardType } from "../types";
 import CommandPalette from "./CommandPalette";
 
@@ -11,6 +12,8 @@ export default function CommandBar({ defaultMode }: { defaultMode: CardType }) {
   const router = useRouter();
   const paletteOpen = useCanvasStore((state) => state.paletteOpen);
   const setPaletteOpen = useCanvasStore((state) => state.setPaletteOpen);
+  const hasCards = useCanvasStore((state) => state.cards.length > 0);
+  const { createRecommendations } = useCanvasActions();
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -44,6 +47,16 @@ export default function CommandBar({ defaultMode }: { defaultMode: CardType }) {
             ⌘K
           </kbd>
         </button>
+
+        {hasCards ? (
+          <button
+            onClick={createRecommendations}
+            className="flex h-12 shrink-0 items-center gap-2 rounded-full border border-line bg-surface/80 px-4 text-sm backdrop-blur-xl transition-colors hover:bg-raised"
+          >
+            <Lightbulb className="size-4 text-iris" />
+            <span className="hidden sm:inline">Ideas</span>
+          </button>
+        ) : null}
 
         <button
           onClick={createCanvas}

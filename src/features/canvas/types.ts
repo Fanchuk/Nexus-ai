@@ -2,18 +2,36 @@ export type CardType = "WEB" | "CHART" | "IMAGE" | "DOC" | "RECS";
 export type CardStatus = "PENDING" | "STREAMING" | "DONE" | "ERROR";
 
 export type CardData = {
+  // Web / General / Q&A
   answer?: string;
   sources?: { title: string; link: string; domain: string; snippet: string }[];
   thread?: { question: string; answer: string }[];
   isSaved?: boolean;
+
+  // Recommendations (RECS)
+  items?: {
+    title: string;
+    description: string;
+    category: string;
+    reasoning: string;
+  }[];
+
+  // Chart
   points?: { label: string; value: number }[];
+
+  // Image
   urls?: string[];
   activeUrl?: string;
   style?: string;
   ratio?: string;
-  summary?: string;
+
+  // Document (DOC)
+  fileId?: string;
   fileName?: string;
-  items?: { title: string; description: string }[];
+  summary?: string;
+  keyPoints?: string;
+  pages?: number;
+  readTime?: number;
 };
 
 export type CanvasCard = {

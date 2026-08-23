@@ -1,3 +1,4 @@
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="uk">
       <body className={`${inter.className} bg-ink text-fg antialiased`}>
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
         <Toaster />
       </body>
     </html>
