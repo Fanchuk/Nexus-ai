@@ -17,6 +17,9 @@ type ImageStudioPanelProps = {
 export default function ImageStudioPanel({ card, style, ratio }: ImageStudioPanelProps) {
   const studio = useImageStudio(card, style, ratio);
   const generating = studio.loading === "generate";
+  
+  const count = studio.data.urls?.length ?? 0;
+  const metaText = count > 0 ? `${count} image${count > 1 ? "s" : ""}` : undefined;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
@@ -24,7 +27,7 @@ export default function ImageStudioPanel({ card, style, ratio }: ImageStudioPane
         icon={<ImagePlus className="size-5" />}
         title="Image studio"
         gradient="from-magenta to-iris"
-        meta={studio.data.urls?.length ? `${studio.data.urls.length} images` : undefined}
+        meta={metaText}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">

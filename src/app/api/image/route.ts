@@ -25,9 +25,16 @@ export async function POST(req: NextRequest) {
     data: { status: "STREAMING", prompt },
   });
 
-  const uploaded = (
-    await Promise.all(Array.from({ length: total }, () => createImage(prompt, style, ratio)))
-  ).filter((item) => item !== null);
+  const results: Awaited<ReturnType<typeof createImage>>[] = [];
+  for (let i = 0; i < total; i++) {
+    const result = await createImage(prompt, style, ratio);
+    results.push(result);
+  }
+
+  const uploaded = results.filter((item) => item !== null);
+
+  console.log("uploaded count:", uploaded.length);
+  console.log("results:", results);
 
   if (!uploaded.length) {
     await prisma.card.update({ where: { id: cardId }, data: { status: "ERROR" } });
@@ -57,6 +64,7 @@ export async function POST(req: NextRequest) {
   await prisma.prompt.create({
     data: { userId: user.id, canvasId: card.canvasId, mode: "IMAGE", text: prompt },
   });
+  
   await trackUsage(user.id, "images", urls.length);
 
   return NextResponse.json({ urls });

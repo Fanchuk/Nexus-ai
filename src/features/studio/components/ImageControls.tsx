@@ -2,7 +2,7 @@
 
 import { ChevronDown, Sparkles } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
-import { RATIOS, STYLES } from "../server/queries";
+import { RATIOS, STYLES } from "../constants";
 
 type ImageControlsProps = {
   prompt: string;

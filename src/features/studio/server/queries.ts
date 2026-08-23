@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { CardData } from "@/features/canvas/types";
 import { ImageCard } from "../types";
+import { RATIOS, STYLES } from "../constants";
 
-export const STYLES = ["Cinematic", "Photo", "Illustration"];
-export const RATIOS = ["4:3", "1:1", "16:9"];
+export { STYLES, RATIOS } from "../constants";
 
 export async function getImageCard(userId: string, cardId: string) {
   const card = await prisma.card.findFirst({

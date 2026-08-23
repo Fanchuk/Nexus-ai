@@ -26,11 +26,14 @@ export function useImageStudio(initial: ImageCard, initialStyle: string, initial
 
     setLoading(null);
 
-    if (!res.ok) return toast.error("Generation failed");
+    if (!res.ok) {
+      toast.error("Generation failed");
+      return;
+    }
 
     const { urls } = await res.json();
     setData({ urls, activeUrl: urls[0], style, ratio });
-    toast.success(`${urls.length} image${urls.length > 1 ? "s" : ""} ready`);
+    toast.success(`${urls.length} image${urls.length !== 1 ? "s" : ""} ready`);
   }
 
   async function removeBackground() {
@@ -44,7 +47,10 @@ export function useImageStudio(initial: ImageCard, initialStyle: string, initial
 
     setLoading(null);
 
-    if (!res.ok) return toast.error("Could not remove the background");
+    if (!res.ok) {
+      toast.error("Could not remove the background");
+      return;
+    }
 
     const { url } = await res.json();
     setData((prev) => ({ ...prev, urls: [...(prev.urls ?? []), url], activeUrl: url }));
