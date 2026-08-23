@@ -21,6 +21,18 @@ enum CardStatus {
   ERROR
 }
 
+enum FileKind {
+  DOCUMENT
+  IMAGE
+  DATA
+}
+
+enum FileStatus {
+  PROCESSING
+  INDEXED
+  ERROR
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -35,6 +47,7 @@ model User {
   canvases      Canvas[]
   prompts       Prompt[]
   usage         Usage[]
+  files         File[]
 
   @@map("user")
 }
@@ -171,4 +184,20 @@ model SearchCache {
   query     String   @id
   results   Json
   createdAt DateTime @default(now())
+}
+
+model File {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  key       String
+  url       String
+  size      Int
+  mime      String
+  kind      FileKind
+  status    FileStatus @default(INDEXED)
+  pages     Int?
+  text      String?
+  createdAt DateTime   @default(now())
 }

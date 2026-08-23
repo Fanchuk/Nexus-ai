@@ -8,7 +8,7 @@ import { CardNode } from "./types";
 
 export default function ImageNode({ data }: NodeProps<CardNode>) {
   const { card } = data;
-  const url = card.data.urls?.[0];
+  const url = card.data.activeUrl ?? card.data.urls?.[0];
 
   return (
     <NodeShell card={card}>

@@ -8,6 +8,9 @@ export type CardData = {
   isSaved?: boolean;
   points?: { label: string; value: number }[];
   urls?: string[];
+  activeUrl?: string;
+  style?: string;
+  ratio?: string;
   summary?: string;
   fileName?: string;
   items?: { title: string; description: string }[];

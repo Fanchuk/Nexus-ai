@@ -6,3 +6,7 @@ const google = createGoogleGenerativeAI({
 });
 
 export const textModel = google("gemini-3.6-flash");
+export const imageModel = google("gemini-3.1-flash-image-preview");
+export const imageOptions = {
+  google: { responseModalities: ["TEXT", "IMAGE"] },
+};
