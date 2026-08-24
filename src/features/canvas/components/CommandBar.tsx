@@ -29,7 +29,9 @@ export default function CommandBar({ defaultMode }: { defaultMode: CardType }) {
 
   async function createCanvas() {
     const res = await fetch("/api/canvas", { method: "POST" });
-    if (res.ok) router.refresh();
+    if (!res.ok) return;
+    const { id } = await res.json();
+    router.push(`/app/canvas?id=${id}`);
   }
 
   return (

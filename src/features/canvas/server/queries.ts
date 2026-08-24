@@ -15,17 +15,17 @@ export function toCard(card: Card): CanvasCard {
   };
 }
 
-export async function getCanvas(userId: string): Promise<CanvasData> {
-  let canvas = await prisma.canvas.findFirst({
-    where: { userId },
-    orderBy: { updatedAt: "desc" },
-    include: { cards: true, edges: true },
-  });
+export async function getCanvas(userId: string, canvasId?: string): Promise<CanvasData> {
+  const include = { cards: true, edges: true };
+
+  let canvas = canvasId
+    ? await prisma.canvas.findFirst({ where: { id: canvasId, userId }, include })
+    : await prisma.canvas.findFirst({ where: { userId }, orderBy: { updatedAt: "desc" }, include });
 
   if (!canvas) {
     canvas = await prisma.canvas.create({
       data: { userId, title: "My first canvas" },
-      include: { cards: true, edges: true },
+      include,
     });
   }
 

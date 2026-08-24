@@ -5,12 +5,12 @@ import { getCanvas } from "./queries";
 import { CardType } from "../types";
 import CanvasBoard from "../components/CanvasBoard";
 
-export default async function CanvasScreen() {
+export default async function CanvasScreen({ canvasId }: { canvasId?: string }) {
   const user = await getUser();
   if (!user) redirect("/sign-in");
 
   const [canvas, settings] = await Promise.all([
-    getCanvas(user.id),
+    getCanvas(user.id, canvasId),
     prisma.settings.findUnique({ where: { userId: user.id } }),
   ]);
 
