@@ -28,9 +28,9 @@ export default async function CanvasScreen({
       defaultMode={(settings?.defaultMode ?? "WEB") as CardType}
       showGrid={settings?.showGrid ?? true}
       lastViewport={{
-        x: settings?.lastX ?? 0,
-        y: settings?.lastY ?? 0,
-        zoom: settings?.lastZoom ?? 1,
+        x: 0,
+        y: 0,
+        zoom: 1,
       }}
       focusCardId={focusCardId}
       autoRun={autoRun}

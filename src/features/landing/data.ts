@@ -70,3 +70,24 @@ export const footerLinks = {
   Resources: ["Docs", "Changelog", "Status"],
   Legal: ["Privacy", "Terms"],
 };
+
+export const plans = [
+  {
+    name: "Free",
+    price: 0,
+    yearlyPrice: 0,
+    description: "Get started with the basics.",
+    features: ["5,000 text requests/month", "300 images/month", "2,000 indexed pages", "3 canvases"],
+    cta: "Get started",
+    highlighted: false,
+  },
+  {
+    name: "Pro",
+    price: 12,
+    yearlyPrice: 9,
+    description: "For power users who need more.",
+    features: ["Unlimited text requests", "2,000 images/month", "20,000 indexed pages", "Unlimited canvases", "Priority support"],
+    cta: "Upgrade to Pro",
+    highlighted: true,
+  },
+];

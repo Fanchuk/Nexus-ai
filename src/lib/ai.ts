@@ -7,11 +7,11 @@ const google = createGoogleGenerativeAI({
 
 const TEXT_MODELS: Record<string, string> = {
   fast: "gemini-3.5-flash-lite",
-  balanced: "gemini-2.5-flash",
+  balanced: "gemini-3.6-flash",
   deep: "gemini-2.5-pro",
 };
 
-export const textModel = google("gemini-2.5-flash");
+export const textModel = google("gemini-3.6-flash");
 
 export const getTextModel = (name?: string | null) =>
   google(TEXT_MODELS[name ?? "balanced"] ?? TEXT_MODELS.balanced);

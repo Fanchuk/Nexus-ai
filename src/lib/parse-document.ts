@@ -1,7 +1,5 @@
 import mammoth from "mammoth";
 
-const pdf = require("pdf-parse") as (buffer: Buffer) => Promise<{ numpages: number; text: string }>;
-
 const CHUNK = 2500;
 
 function chunk(text: string) {
@@ -17,7 +15,9 @@ export async function parseDocument(url: string, mime: string) {
   const buffer = Buffer.from(await res.arrayBuffer());
 
   if (mime === "application/pdf") {
-    const result = await pdf(buffer);
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const pdfParse = require("pdf-parse");
+    const result = await pdfParse(buffer);
     return chunk(result.text);
   }
 

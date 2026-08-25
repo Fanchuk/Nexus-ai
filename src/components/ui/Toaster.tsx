@@ -3,7 +3,6 @@
 import { createPortal } from "react-dom";
 import { X, CheckCircle, XCircle, Info } from "lucide-react";
 import { useToastStore } from "@/stores/toast-store";
-import { useState, useEffect } from "react";
 
 const icons = {
   success: <CheckCircle className="size-4 shrink-0 text-mint" />,
@@ -20,13 +19,8 @@ const borders = {
 export default function Toaster() {
   const toasts = useToastStore((state) => state.toasts);
   const remove = useToastStore((state) => state.remove);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <div className="fixed right-4 top-4 z-[9999] flex flex-col gap-2">
