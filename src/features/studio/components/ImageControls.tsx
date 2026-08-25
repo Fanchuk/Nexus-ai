@@ -77,7 +77,7 @@ export default function ImageControls({
         <input
           type="range"
           min={1}
-          max={4}
+          max={2}
           value={count}
           onChange={(event) => onCount(Number(event.target.value))}
           className="w-full"
