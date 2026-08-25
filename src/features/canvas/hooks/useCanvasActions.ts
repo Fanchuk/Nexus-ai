@@ -87,6 +87,7 @@ export function useCanvasActions() {
   }
 
   async function generateChart(card: CanvasCard) {
+    console.log('generateChart cardId:', card.id)
     setStatus(card.id, "STREAMING");
 
     const res = await fetch("/api/chart", {
