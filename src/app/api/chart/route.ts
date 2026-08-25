@@ -4,6 +4,7 @@ import { z } from "zod";
 import { textModel } from "@/lib/ai";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
+import { isOverLimit } from "@/lib/usage";
 import { getIncomingContext } from "@/features/canvas/server/context";
 
 export const maxDuration = 30;
@@ -23,6 +24,10 @@ const chartSchema = z.object({
 export async function POST(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await isOverLimit(user.id, "textRequests")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
 
   const { cardId, prompt } = await req.json();
 

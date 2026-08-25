@@ -5,7 +5,15 @@ import { getCanvas } from "./queries";
 import { CardType } from "../types";
 import CanvasBoard from "../components/CanvasBoard";
 
-export default async function CanvasScreen({ canvasId }: { canvasId?: string }) {
+export default async function CanvasScreen({
+  canvasId,
+  focusCardId,
+  autoRun,
+}: {
+  canvasId?: string;
+  focusCardId?: string;
+  autoRun?: boolean;
+}) {
   const user = await getUser();
   if (!user) redirect("/sign-in");
 
@@ -24,6 +32,8 @@ export default async function CanvasScreen({ canvasId }: { canvasId?: string }) 
         y: settings?.lastY ?? 0,
         zoom: settings?.lastZoom ?? 1,
       }}
+      focusCardId={focusCardId}
+      autoRun={autoRun}
     />
   );
 }

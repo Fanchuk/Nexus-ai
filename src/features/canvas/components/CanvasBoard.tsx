@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -26,19 +26,22 @@ type CanvasBoardProps = {
   defaultMode: CardType;
   showGrid: boolean;
   lastViewport: { x: number; y: number; zoom: number };
+  focusCardId?: string;
+  autoRun?: boolean;
 };
 
-function CanvasInner({ initial, defaultMode, showGrid, lastViewport }: CanvasBoardProps) {
+function CanvasInner({ initial, defaultMode, showGrid, lastViewport, focusCardId, autoRun }: CanvasBoardProps) {
   const init = useCanvasStore((state) => state.init);
   const cards = useCanvasStore((state) => state.cards);
   const edges = useCanvasStore((state) => state.edges);
   const updateCard = useCanvasStore((state) => state.updateCard);
   const setActiveCardId = useCanvasStore((state) => state.setActiveCardId);
 
-  const { connect, remove, savePosition } = useCanvasActions();
-  const { setViewport } = useReactFlow();
+  const { connect, remove, savePosition, run } = useCanvasActions();
+  const { setViewport, fitView } = useReactFlow();
   
   const [ready, setReady] = useState(false);
+  const focused = useRef(false);
 
   useEffect(() => {
     init(initial);
@@ -47,6 +50,17 @@ function CanvasInner({ initial, defaultMode, showGrid, lastViewport }: CanvasBoa
       setReady(true);
     }, 50);
   }, [init, initial, lastViewport, setViewport]);
+
+  useEffect(() => {
+    if (!focusCardId || focused.current) return;
+    focused.current = true;
+    const timer = setTimeout(() => {
+      fitView({ nodes: [{ id: focusCardId }], duration: 500, maxZoom: 1 });
+      const card = useCanvasStore.getState().cards.find((item) => item.id === focusCardId);
+      if (autoRun && card && card.status === "PENDING") run(card);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [focusCardId, autoRun, fitView, run]);
 
   const nodes: CardNode[] = useMemo(
     () =>

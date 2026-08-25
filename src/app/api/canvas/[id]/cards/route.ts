@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (body.prompt) {
     await prisma.prompt.create({
-      data: { userId: user.id, canvasId: canvas.id, mode: body.type, text: body.prompt },
+      data: { userId: user.id, canvasId: canvas.id, mode: body.type, text: body.prompt, cardId: card.id },
     });
   }
 

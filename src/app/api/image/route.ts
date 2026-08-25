@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, toJson } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
-import { trackUsage } from "@/lib/usage";
+import { isOverLimit, trackUsage } from "@/lib/usage";
 import { createImage } from "@/lib/image-gen";
 import { CardData } from "@/features/canvas/types";
 
@@ -10,6 +10,10 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await isOverLimit(user.id, "images")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
 
   const { cardId, prompt, style, ratio, count } = await req.json();
 
@@ -32,9 +36,6 @@ export async function POST(req: NextRequest) {
   }
 
   const uploaded = results.filter((item) => item !== null);
-
-  console.log("uploaded count:", uploaded.length);
-  console.log("results:", results);
 
   if (!uploaded.length) {
     await prisma.card.update({ where: { id: cardId }, data: { status: "ERROR" } });
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
   });
 
   await prisma.prompt.create({
-    data: { userId: user.id, canvasId: card.canvasId, mode: "IMAGE", text: prompt },
+    data: { userId: user.id, canvasId: card.canvasId, mode: "IMAGE", text: prompt, cardId: card.id },
   });
   
   await trackUsage(user.id, "images", urls.length);

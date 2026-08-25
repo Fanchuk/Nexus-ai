@@ -3,7 +3,7 @@ import { generateText } from "ai";
 import { textModel } from "@/lib/ai";
 import { prisma, toJson } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
-import { trackUsage } from "@/lib/usage";
+import { isOverLimit, trackUsage } from "@/lib/usage";
 import { CardData } from "@/features/canvas/types";
 
 export const maxDuration = 30;
@@ -19,6 +19,10 @@ const TASKS: Record<Action, string> = {
 export async function POST(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await isOverLimit(user.id, "textRequests")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
 
   const { cardId, action, question } = await req.json();
 
@@ -68,6 +72,7 @@ export async function POST(req: NextRequest) {
       canvasId: card.canvasId,
       mode: "DOC",
       text: question ?? `${action}: ${file.name}`,
+      cardId: card.id,
     },
   });
   await trackUsage(user.id, "textRequests");

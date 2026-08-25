@@ -4,7 +4,7 @@ import { z } from "zod";
 import { textModel } from "@/lib/ai";
 import { prisma, toJson } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
-import { trackUsage } from "@/lib/usage";
+import { isOverLimit, trackUsage } from "@/lib/usage";
 import { CardData } from "@/features/canvas/types";
 
 export const maxDuration = 30;
@@ -26,6 +26,10 @@ const schema = z.object({
 export async function POST(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await isOverLimit(user.id, "textRequests")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
 
   const { cardId, focus } = await req.json();
 
@@ -68,7 +72,7 @@ export async function POST(req: NextRequest) {
   });
 
   await prisma.prompt.create({
-    data: { userId: user.id, canvasId: card.canvasId, mode: "RECS", text: "Recommendations" },
+    data: { userId: user.id, canvasId: card.canvasId, mode: "RECS", text: "Recommendations", cardId: card.id },
   });
   await trackUsage(user.id, "textRequests");
 

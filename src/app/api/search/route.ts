@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { streamText } from "ai";
-import { textModel } from "@/lib/ai";
+import { getTextModel } from "@/lib/ai";
 import { searchWeb, WebSource } from "@/lib/serper";
 import { prisma, toJson } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
-import { trackUsage } from "@/lib/usage";
+import { isOverLimit, trackUsage } from "@/lib/usage";
 import { getIncomingContext } from "@/features/canvas/server/context";
 import { CardData } from "@/features/canvas/types";
 
@@ -20,7 +20,13 @@ export async function POST(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  if (await isOverLimit(user.id, "textRequests")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
+
   const { cardId, action = "answer", question } = await req.json();
+
+  const settings = await prisma.settings.findUnique({ where: { userId: user.id } });
 
   const card = await prisma.card.findFirst({
     where: { id: cardId, type: "WEB", canvas: { userId: user.id } },
@@ -50,13 +56,14 @@ export async function POST(req: NextRequest) {
       canvasId: card.canvasId,
       mode: "WEB",
       text: question ?? card.prompt,
+      cardId: card.id,
     },
   });
   await trackUsage(user.id, "textRequests");
 
   const result = streamText({
-    model: textModel,
-    system: SYSTEM,
+    model: getTextModel(settings?.textModel),
+    system: `${SYSTEM} Answer in ${settings?.answerLang === "uk" ? "Ukrainian" : "English"}.`,
     prompt: [
       context ? `Context from linked cards:\n${context}` : "",
       `Sources:\n${references}`,

@@ -34,6 +34,23 @@ export const fileRouter = {
 
       return { fileId: created.id };
     }),
+
+  avatar: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+    .middleware(async () => {
+      const user = await getUser();
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const url = file.ufsUrl ?? file.url;
+
+      await prisma.user.update({
+        where: { id: metadata.userId },
+        data: { image: url },
+      });
+
+      return { url };
+    }),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof fileRouter;

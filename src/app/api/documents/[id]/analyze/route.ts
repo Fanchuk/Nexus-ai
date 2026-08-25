@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, toJson } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
-import { trackUsage } from "@/lib/usage";
+import { isOverLimit, trackUsage } from "@/lib/usage";
 import { getReadTime, parseDocument } from "@/lib/parse-document";
 import { CardData } from "@/features/canvas/types";
 
@@ -11,6 +11,10 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (await isOverLimit(user.id, "indexedPages")) {
+    return NextResponse.json({ error: "Monthly limit reached" }, { status: 429 });
+  }
 
   const { id } = await params;
   const { cardId } = await req.json();

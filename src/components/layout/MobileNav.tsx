@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { Clock, Files, Frame, Library, Settings } from "lucide-react";
 
 const links = [
-  { href: "/canvas", label: "Canvas", icon: Frame },
-  { href: "/library", label: "Library", icon: Library },
-  { href: "/files", label: "Files", icon: Files },
-  { href: "/history", label: "History", icon: Clock },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/app/canvas", label: "Canvas", icon: Frame },
+  { href: "/app/library", label: "Library", icon: Library },
+  { href: "/app/files", label: "Files", icon: Files },
+  { href: "/app/history", label: "History", icon: Clock },
+  { href: "/app/settings", label: "Settings", icon: Settings },
 ];
 
 export default function MobileNav() {

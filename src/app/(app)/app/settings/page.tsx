@@ -1,4 +1,5 @@
-import SettingsPage from '@/features/settings/SettingsPage'
+import SettingsScreen from "@/features/settings/server/SettingsScreen";
+
 export default function Page() {
-    return <SettingsPage />
+  return <SettingsScreen />;
 }
