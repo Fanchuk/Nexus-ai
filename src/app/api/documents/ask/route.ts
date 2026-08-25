@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
   const document = file.text
     .split("\f")
-    .map((text, index) => `[p.${index + 1}] ${text}`)
+    .map((text: string, index: number) => `[p.${index + 1}] ${text}`)
     .join("\n\n")
     .slice(0, 200000);
 
