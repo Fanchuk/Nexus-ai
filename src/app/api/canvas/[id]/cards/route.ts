@@ -34,7 +34,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       prompt: body.prompt,
       x: body.x,
       y: body.y,
-      data: (body.data ?? {}) as Record<string, unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: (body.data ?? {}) as any,
     },
   });
 
