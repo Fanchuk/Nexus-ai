@@ -21,7 +21,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     id: canvas.id,
     title: canvas.title,
     cards: canvas.cards.map(toCard),
-    edges: canvas.edges.map((edge) => ({
+    edges: canvas.edges.map((edge: { id: string; sourceId: string; targetId: string }) => ({
       id: edge.id,
       sourceId: edge.sourceId,
       targetId: edge.targetId,
