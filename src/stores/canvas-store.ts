@@ -17,6 +17,7 @@ type CanvasState = {
   setStatus: (id: string, status: CardStatus) => void;
   removeCard: (id: string) => void;
   addEdge: (edge: CanvasEdge) => void;
+  replaceEdge: (tempId: string, edge: CanvasEdge) => void;
 };
 
 export const useCanvasStore = create<CanvasState>((set) => ({
@@ -61,4 +62,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     })),
 
   addEdge: (edge) => set((state) => ({ edges: [...state.edges, edge] })),
+
+  replaceEdge: (tempId, edge) => 
+    set((state) => ({ edges: state.edges.map((item) => (item.id === tempId ? edge : item)) })),
 }));

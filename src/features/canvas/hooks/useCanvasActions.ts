@@ -21,6 +21,7 @@ export function useCanvasActions() {
   const setStatus = useCanvasStore((state) => state.setStatus);
   const removeCard = useCanvasStore((state) => state.removeCard);
   const addEdge = useCanvasStore((state) => state.addEdge);
+  const replaceEdge = useCanvasStore((state) => state.replaceEdge);
 
   const savePosition = useDebouncedCallback((id: string, x: number, y: number) => {
     fetch(`/api/cards/${id}`, {
@@ -141,7 +142,12 @@ export function useCanvasActions() {
       }),
     });
 
-    if (res.ok) replaceCard(tempId, await res.json());
+    if (res.ok) {
+      replaceCard(tempId, await res.json());
+    } else {
+      toast.error("Failed to duplicate card");
+      removeCard(tempId);
+    }
   }
 
   async function remove(id: string) {
@@ -150,13 +156,21 @@ export function useCanvasActions() {
   }
 
   async function connect(sourceId: string, targetId: string) {
+    const tempEdge = { id: `temp-${nanoid()}`, sourceId, targetId };
+    
+    addEdge(tempEdge);
+    
     const res = await fetch("/api/edges", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ canvasId, sourceId, targetId }),
     });
 
-    if (res.ok) addEdge(await res.json());
+    if (res.ok) {
+      replaceEdge(tempEdge.id, await res.json());
+    } else {
+      toast.error("Failed to connect cards");
+    }
   }
 
   async function turnIntoChart(card: CanvasCard) {
