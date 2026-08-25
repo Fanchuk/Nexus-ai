@@ -29,9 +29,11 @@ export async function POST(req: NextRequest) {
     data: { status: "STREAMING", prompt },
   });
 
-  const results = await Promise.all(
-    Array.from({ length: total }, () => createImage(prompt, style, ratio))
-  );
+  const results = [];
+  for (let i = 0; i < total; i++) {
+    const result = await createImage(prompt, style, ratio);
+    results.push(result);
+  }
 
   const uploaded = results.filter((item) => item !== null);
 
