@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
 
@@ -12,7 +11,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const { id } = await params;
   
   const body = await req.text();
-  const data: Prisma.CardUpdateManyMutationInput = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = {};
   
   if (body) {
     const parsed = JSON.parse(body);
