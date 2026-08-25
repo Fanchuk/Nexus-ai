@@ -12,7 +12,7 @@ export function useImageStudio(initial: ImageCard, initialStyle: string, initial
   const [prompt, setPrompt] = useState(initial.prompt);
   const [style, setStyle] = useState(initialStyle);
   const [ratio, setRatio] = useState(initialRatio);
-  const [count, setCount] = useState(4);
+  const [count, setCount] = useState(2);
   const [loading, setLoading] = useState<Loading>(null);
 
   async function generate() {
