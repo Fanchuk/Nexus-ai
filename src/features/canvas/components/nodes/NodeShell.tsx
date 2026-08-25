@@ -11,14 +11,27 @@ type NodeShellProps = {
   children: React.ReactNode;
 };
 
+const edgeHandleClass =
+  "!h-full !w-3 !min-w-0 !rounded-none !border-0 !bg-transparent opacity-0 transition-opacity group-hover:opacity-100 hover:!bg-iris/25 group-hover:!bg-iris/10";
+
 export default function NodeShell({ card, children }: NodeShellProps) {
   const { run, duplicate, remove, expand, turnIntoChart } = useCanvasActions();
   const config = CARD_CONFIG[card.type];
 
   return (
     <div className={`group w-[300px] rounded-2xl bg-gradient-to-br p-px ${config.gradient}`}>
-      <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
+      <Handle
+        type="target"
+        position={Position.Left}
+        className={edgeHandleClass}
+        style={{ left: 0, top: 0, transform: "none", borderRadius: 0 }}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        className={edgeHandleClass}
+        style={{ right: 0, top: 0, transform: "none", borderRadius: 0 }}
+      />
 
       <div className="rounded-[15px] bg-surface p-4">
         <div className="mb-4 flex items-center gap-2">
