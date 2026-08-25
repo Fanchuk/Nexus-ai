@@ -3,7 +3,6 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
 import { toCard } from "@/features/canvas/server/queries";
-import type { Prisma } from "@prisma/client";
 
 const bodySchema = z.object({
   type: z.enum(["WEB", "CHART", "IMAGE", "DOC", "RECS"]),
@@ -35,7 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       prompt: body.prompt,
       x: body.x,
       y: body.y,
-      data: (body.data ?? {}) as Prisma.InputJsonValue,
+      data: (body.data ?? {}) as Record<string, unknown>,
     },
   });
 
