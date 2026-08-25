@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   });
   if (!card) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const total = Math.min(Math.max(Number(count) || 1, 1), 4);
+  const total = Math.min(Math.max(Number(count) || 1, 1), 2);
 
   await prisma.card.update({
     where: { id: cardId },
