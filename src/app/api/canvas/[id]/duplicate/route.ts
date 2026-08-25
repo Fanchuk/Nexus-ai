@@ -38,7 +38,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   }
 
   await prisma.cardEdge.createMany({
-    data: source.edges.map((edge) => ({
+    data: source.edges.map((edge: { sourceId: string; targetId: string }) => ({
       canvasId: copy.id,
       sourceId: ids.get(edge.sourceId)!,
       targetId: ids.get(edge.targetId)!,
