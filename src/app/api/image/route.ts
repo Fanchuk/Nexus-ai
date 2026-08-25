@@ -29,11 +29,9 @@ export async function POST(req: NextRequest) {
     data: { status: "STREAMING", prompt },
   });
 
-  const results: Awaited<ReturnType<typeof createImage>>[] = [];
-  for (let i = 0; i < total; i++) {
-    const result = await createImage(prompt, style, ratio);
-    results.push(result);
-  }
+  const results = await Promise.all(
+    Array.from({ length: total }, () => createImage(prompt, style, ratio))
+  );
 
   const uploaded = results.filter((item) => item !== null);
 
@@ -65,7 +63,7 @@ export async function POST(req: NextRequest) {
   await prisma.prompt.create({
     data: { userId: user.id, canvasId: card.canvasId, mode: "IMAGE", text: prompt, cardId: card.id },
   });
-  
+
   await trackUsage(user.id, "images", urls.length);
 
   return NextResponse.json({ urls });
