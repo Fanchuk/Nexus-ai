@@ -13,7 +13,7 @@
 [![AI SDK](https://img.shields.io/badge/AI_SDK-v5-000000?style=flat-square&logo=vercel)](https://ai-sdk.dev)
 [![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev)
 
-### [**Live Demo**](https://nexus-ai.vercel.app) · [Report Bug](https://github.com/Fanchuk/nexus-ai/issues) · [Request Feature](https://github.com/Fanchuk/nexus-ai/issues)
+### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Fanchuk/nexus-ai/issues) · [Request Feature](https://github.com/Fanchuk/nexus-ai/issues)
 
 </div>
 
@@ -450,7 +450,7 @@ Open [http://localhost:3000](http://localhost:3000).
 1. Push the repository to GitHub and import it into [Vercel](https://vercel.com)
 2. Add every environment variable from the list above, setting `AUTH_URL` to the production domain
 3. Add the production callback URLs to the Google and GitHub OAuth apps:
-   `https://your-domain.vercel.app/api/auth/callback/google` and `.../github`
+   `https://nexus-ai-chi-orcin.vercel.app/api/auth/callback/google` and `.../github`
 4. `prisma generate` runs automatically during the build via `postinstall`
 5. Run `npx prisma migrate deploy` against the production database
 
