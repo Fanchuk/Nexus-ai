@@ -13,7 +13,7 @@
 [![AI SDK](https://img.shields.io/badge/AI_SDK-v5-000000?style=flat-square&logo=vercel)](https://ai-sdk.dev)
 [![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev)
 
-### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Fanchuk/nexus-ai/issues) · [Request Feature](https://github.com/Fanchuk/nexus-ai/issues)
+### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Fanchuk/Nexus-ai/issues) · [Request Feature](https://github.com/Fanchuk/Nexus-ai/issues)
 
 </div>
 
@@ -41,65 +41,37 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 
 ## Screenshots
 
-> Save the images below into the **`public/`** folder using these exact filenames — the README links to them directly and they will render on GitHub automatically.
-
 ### The canvas
 
 | Canvas board | Command palette |
 | :---: | :---: |
 | ![Canvas](public/canvas.png) | ![Command palette](public/command-palette.png) |
-| `public/canvas.png` | `public/command-palette.png` |
 
 ### AI blocks
 
 | Web answer | Image studio |
 | :---: | :---: |
 | ![Web answer](public/web-answer.png) | ![Image studio](public/image-studio.png) |
-| `public/web-answer.png` | `public/image-studio.png` |
 
 | Document analysis | Recommendations |
 | :---: | :---: |
 | ![Document analysis](public/document-analysis.png) | ![Recommendations](public/recommendations.png) |
-| `public/document-analysis.png` | `public/recommendations.png` |
 
 ### Workspace
 
 | Library | Files |
 | :---: | :---: |
 | ![Library](public/library.png) | ![Files](public/files.png) |
-| `public/library.png` | `public/files.png` |
 
 | History | Settings |
 | :---: | :---: |
 | ![History](public/history.png) | ![Settings](public/settings.png) |
-| `public/history.png` | `public/settings.png` |
 
 ### Entry points
 
 | Landing | Sign in | Sign up |
 | :---: | :---: | :---: |
 | ![Landing](public/landing.png) | ![Sign in](public/sign-in.png) | ![Sign up](public/sign-up.png) |
-| `public/landing.png` | `public/sign-in.png` | `public/sign-up.png` |
-
-**Filenames to save into `public/`:**
-
-```
-landing.png             marketing page — hero, features, pricing
-sign-in.png             sign-in card with Google / GitHub / email
-sign-up.png             workspace creation form
-canvas.png              the infinite board with several cards and an edge
-command-palette.png     ⌘K palette open with the four modes
-web-answer.png          expanded web answer with source chips
-image-studio.png        image studio with variations generated
-document-analysis.png   document page with preview, tabs and citations
-recommendations.png     recommendation list with filters
-library.png             canvas grid with live previews
-files.png               file list, storage bar and preview panel
-history.png             prompt timeline grouped by day
-settings.png            account, AI preferences, integrations, usage
-```
-
-> Capture desktop shots at ~1440px wide, then compress with [Squoosh](https://squoosh.app) so the repository stays light.
 
 ---
 
@@ -471,7 +443,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **Nazar Fanchuk**
 
-[GitHub](https://github.com/Fanchuk) · [LinkedIn](https://linkedin.com) · [Email](mailto:hello@example.com)
+[GitHub](https://github.com/Fanchuk) · [LinkedIn](https://linkedin.com/in/YOUR-PROFILE)
 
 <div align="center">
 
