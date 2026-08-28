@@ -13,7 +13,7 @@
 [![AI SDK](https://img.shields.io/badge/AI_SDK-v5-000000?style=flat-square&logo=vercel)](https://ai-sdk.dev)
 [![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev)
 
-### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Fanchuk/Nexus-ai/issues) · [Request Feature](https://github.com/Fanchuk/Nexus-ai/issues)
+### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Metenchuk/Nexus-ai/issues) · [Request Feature](https://github.com/Metenchuk/Nexus-ai/issues)
 
 </div>
 
@@ -361,7 +361,7 @@ nexus-ai/
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/Fanchuk/nexus-ai.git
+git clone https://github.com/Metenchuk/nexus-ai.git
 cd nexus-ai
 npm install
 ```
@@ -441,9 +441,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Author
 
-**Nazar Fanchuk**
+**Nazar Metenchuk**
 
-[GitHub](https://github.com/Fanchuk) · [LinkedIn](https://linkedin.com/in/YOUR-PROFILE)
+[GitHub](https://github.com/Metenchuk) · [LinkedIn](https://linkedin.com/in/nazar-metenchuk)
 
 <div align="center">
 
