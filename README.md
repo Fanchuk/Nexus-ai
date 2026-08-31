@@ -12,6 +12,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![AI SDK](https://img.shields.io/badge/AI_SDK-v5-000000?style=flat-square&logo=vercel)](https://ai-sdk.dev)
 [![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev)
+![CI](https://github.com/Metenchuk/Nexus-ai/actions/workflows/ci.yml/badge.svg)
 
 ### [**Live Demo**](https://nexus-ai-chi-orcin.vercel.app) · [Report Bug](https://github.com/Metenchuk/Nexus-ai/issues) · [Request Feature](https://github.com/Metenchuk/Nexus-ai/issues)
 
@@ -434,7 +435,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - [ ] **Realtime collaboration** — shared canvases with live cursors
 - [ ] **Export** — canvas to PDF and slide deck
 - [ ] **Card templates** — reusable prompt chains saved as presets
-- [ ] **Test suite** — Vitest for the canvas store and prompt builders, Playwright for the create-card flow
+- [x] **Test suite** — Vitest unit tests for canvas store, wired into GitHub Actions CI
 - [ ] **Mobile canvas gestures** — pinch to zoom, long-press toolbar
 
 ---
