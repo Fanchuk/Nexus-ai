@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { BarChart3, Copy, Maximize2, RefreshCw, Trash2 } from "lucide-react";
 import { useCanvasActions } from "../../hooks/useCanvasActions";
@@ -14,12 +15,12 @@ type NodeShellProps = {
 const edgeHandleClass =
   "!h-full !w-3 !min-w-0 !rounded-none !border-0 !bg-transparent opacity-0 transition-opacity group-hover:opacity-100 hover:!bg-iris/25 group-hover:!bg-iris/10";
 
-export default function NodeShell({ card, children }: NodeShellProps) {
+function NodeShell({ card, children }: NodeShellProps) {
   const { run, duplicate, remove, expand, turnIntoChart } = useCanvasActions();
   const config = CARD_CONFIG[card.type];
 
   return (
-    <div className={`group w-[300px] rounded-2xl bg-gradient-to-br p-px ${config.gradient}`}>
+    <div className={`group w-[300px] rounded-2xl bg-linear-to-br p-px ${config.gradient}`}>
       <Handle
         type="target"
         position={Position.Left}
@@ -35,7 +36,7 @@ export default function NodeShell({ card, children }: NodeShellProps) {
 
       <div className="rounded-[15px] bg-surface p-4">
         <div className="mb-4 flex items-center gap-2">
-          <span className={`size-3 rounded-full bg-gradient-to-br ${config.gradient}`} />
+          <span className={`size-3 rounded-full bg-linear-to-br ${config.gradient}`} />
           <h3 className="truncate text-sm">{card.title}</h3>
 
           <div className="ml-auto flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
@@ -85,3 +86,5 @@ export default function NodeShell({ card, children }: NodeShellProps) {
     </div>
   );
 }
+
+export default memo(NodeShell);

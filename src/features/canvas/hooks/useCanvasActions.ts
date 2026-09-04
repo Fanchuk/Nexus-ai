@@ -14,7 +14,6 @@ export function useCanvasActions() {
   const { screenToFlowPosition } = useReactFlow();
 
   const canvasId = useCanvasStore((state) => state.canvasId);
-  const cards = useCanvasStore((state) => state.cards);
   const addCard = useCanvasStore((state) => state.addCard);
   const replaceCard = useCanvasStore((state) => state.replaceCard);
   const patchCardData = useCanvasStore((state) => state.patchCardData);
@@ -88,7 +87,6 @@ export function useCanvasActions() {
   }
 
   async function generateChart(card: CanvasCard) {
-    console.log('generateChart cardId:', card.id)
     setStatus(card.id, "STREAMING");
 
     const res = await fetch("/api/chart", {
@@ -197,7 +195,7 @@ export function useCanvasActions() {
   }
 
   function findCard(id: string) {
-    return cards.find((card) => card.id === id) ?? null;
+    return useCanvasStore.getState().cards.find((card) => card.id === id) ?? null;
   }
 
   return {

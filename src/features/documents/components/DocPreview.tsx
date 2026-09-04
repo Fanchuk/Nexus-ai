@@ -13,7 +13,7 @@ export default function DocPreview({ pages, page, onPage }: DocPreviewProps) {
 
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <div className="aspect-[3/4] overflow-y-auto rounded-xl bg-gradient-to-b from-gold/12 to-transparent p-5">
+      <div className="aspect-[3/4] overflow-y-auto rounded-xl bg-linear-to-b from-gold/12 to-transparent p-5">
         <p className="whitespace-pre-wrap text-sm leading-6 text-fg/80">
           {pages[page - 1] || "This page has no text."}
         </p>

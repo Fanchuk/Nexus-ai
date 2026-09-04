@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -84,7 +84,7 @@ function CanvasInner({ initial, defaultMode, showGrid, lastViewport, focusCardId
     [edges]
   );
 
-  function onNodesChange(changes: NodeChange<CardNode>[]) {
+  const onNodesChange = useCallback((changes: NodeChange<CardNode>[]) => {
     changes.forEach((change) => {
       if (change.type === "position" && change.position) {
         updateCard(change.id, { x: change.position.x, y: change.position.y });
@@ -93,19 +93,11 @@ function CanvasInner({ initial, defaultMode, showGrid, lastViewport, focusCardId
         setActiveCardId(change.id);
       }
     });
-  }
+  }, [updateCard, setActiveCardId]);
 
-  function onConnect(connection: Connection) {
+  const onConnect = useCallback((connection: Connection) => {
     if (connection.source && connection.target) connect(connection.source, connection.target);
-  }
-
-  function onMoveEnd(_: unknown, viewport: { x: number; y: number; zoom: number }) {
-    fetch("/api/settings", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lastX: viewport.x, lastY: viewport.y, lastZoom: viewport.zoom }),
-    });
-  }
+  }, [connect]);
 
   return (
     <div className={`relative h-svh transition-opacity duration-150 ${ready ? "opacity-100" : "opacity-0"}`}>
@@ -121,7 +113,7 @@ function CanvasInner({ initial, defaultMode, showGrid, lastViewport, focusCardId
         onNodeDragStop={(_, node) => savePosition(node.id, node.position.x, node.position.y)}
         onNodesDelete={(deleted) => deleted.forEach((node) => remove(node.id))}
         onConnect={onConnect}
-        onMoveEnd={onMoveEnd}
+        onlyRenderVisibleElements
         deleteKeyCode="Delete"
         minZoom={0.3}
         maxZoom={2}

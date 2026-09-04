@@ -5,7 +5,7 @@ export function Showcase() {
   return (
     <section id="showcase" className="px-6 py-24">
       <Reveal className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
-        <div className="relative overflow-hidden rounded-3xl border border-white/12 bg-gradient-to-br from-[#2a35d6]/45 via-[#6b4ee0]/35 to-[#9747d2]/35 p-9 transition-transform duration-300 hover:scale-[1.01] md:col-span-2 md:row-span-2">
+        <div className="relative overflow-hidden rounded-3xl border border-white/12 bg-linear-to-br from-[#2a35d6]/45 via-[#6b4ee0]/35 to-[#9747d2]/35 p-9 transition-transform duration-300 hover:scale-[1.01] md:col-span-2 md:row-span-2">
           <span className="mk-float absolute right-8 top-8 h-24 w-24 rounded-full bg-white/10 blur-xl" />
           <Globe className="h-9 w-9 text-white" />
           <h3 className="mt-6 text-3xl font-semibold text-white md:text-4xl">Live web search</h3>

@@ -9,11 +9,11 @@ export default function ImageCard() {
       innerClassName="p-4"
     >
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-3 rounded-full bg-gradient-to-br from-magenta to-iris" />
+        <span className="size-3 rounded-full bg-linear-to-br from-magenta to-iris" />
         <h3 className="text-sm">AI image</h3>
       </div>
 
-      <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-magenta/25 via-iris/20 to-cobalt/25">
+      <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-linear-to-br from-magenta/25 via-iris/20 to-cobalt/25">
         <ImageIcon className="size-10 text-magenta/70 transition-transform duration-500 group-hover:scale-110" />
       </div>
     </GradientCard>

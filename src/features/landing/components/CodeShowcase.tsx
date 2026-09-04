@@ -39,7 +39,7 @@ export function CodeShowcase() {
                   key={lang}
                   className={`rounded-lg px-3 py-2 text-sm transition-colors ${
                     i === 0
-                      ? "bg-gradient-to-r from-[#2a35d6]/40 to-[#9747d2]/30 text-white"
+                      ? "bg-linear-to-r from-[#2a35d6]/40 to-[#9747d2]/30 text-white"
                       : "text-white/45 hover:bg-white/5 hover:text-white/80"
                   }`}
                 >

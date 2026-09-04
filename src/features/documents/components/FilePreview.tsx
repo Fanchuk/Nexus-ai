@@ -57,7 +57,7 @@ export default function FilePreview({
 
   return (
     <aside className="rounded-2xl border border-line bg-surface p-5">
-      <div className="relative grid aspect-[3/4] place-items-center overflow-hidden rounded-xl bg-gradient-to-b from-gold/12 to-transparent">
+      <div className="relative grid aspect-[3/4] place-items-center overflow-hidden rounded-xl bg-linear-to-b from-gold/12 to-transparent">
         {file.kind === "IMAGE" ? (
           <Image src={file.url} alt={file.name} fill className="object-cover" sizes="420px" />
         ) : (
@@ -80,7 +80,7 @@ export default function FilePreview({
         <button
           onClick={ask}
           disabled={asking}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-magenta py-2.5 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-gold to-magenta py-2.5 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {asking ? <Spinner size={16} /> : <MessageSquare className="size-4" />}
           Ask this file

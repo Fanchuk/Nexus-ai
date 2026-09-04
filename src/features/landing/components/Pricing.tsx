@@ -44,7 +44,7 @@ export function Pricing() {
             <div
               className={`relative h-full overflow-hidden rounded-3xl border p-8 transition-all duration-300 hover:-translate-y-1.5 ${
                 plan.highlighted
-                  ? "border-white/40 bg-gradient-to-br from-[#4d6aff]/30 to-[#b65bc8]/20"
+                  ? "border-white/40 bg-linear-to-br from-[#4d6aff]/30 to-[#b65bc8]/20"
                   : "border-white/12 bg-white/[0.06] hover:border-white/30"
               }`}
             >
@@ -76,7 +76,7 @@ export function Pricing() {
               <button
                 className={`mt-8 w-full rounded-full py-3.5 text-base font-semibold transition-all ${
                   plan.highlighted
-                    ? "bg-gradient-to-r from-[#4d6aff] via-[#b65bc8] to-[#ec4899] text-white hover:shadow-xl hover:shadow-[#ec4899]/40"
+                    ? "bg-linear-to-r from-[#4d6aff] via-[#b65bc8] to-[#ec4899] text-white hover:shadow-xl hover:shadow-[#ec4899]/40"
                     : "border border-white/20 bg-white/[0.06] text-white hover:border-white/40 hover:bg-white/[0.12]"
                 }`}
               >

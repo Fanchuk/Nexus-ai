@@ -30,7 +30,7 @@ export default function UploadDropzone({ analyzing, onUploaded }: UploadDropzone
   }
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-gold to-magenta p-px">
+    <div className="rounded-2xl bg-linear-to-br from-gold to-magenta p-px">
       <label
         onDragOver={(event) => {
           event.preventDefault();

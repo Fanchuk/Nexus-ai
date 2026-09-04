@@ -20,7 +20,7 @@ export default function CanvasPreview({ cards }: { cards: PreviewCard[] }) {
             left: `${8 + ((card.x - minX) / spanX) * 62}%`,
             top: `${12 + ((card.y - minY) / spanY) * 58}%`,
           }}
-          className={`absolute h-8 w-20 rounded-lg bg-gradient-to-br opacity-80 ${CARD_CONFIG[card.type].gradient}`}
+          className={`absolute h-8 w-20 rounded-lg bg-linear-to-br opacity-80 ${CARD_CONFIG[card.type].gradient}`}
         />
       ))}
     </div>

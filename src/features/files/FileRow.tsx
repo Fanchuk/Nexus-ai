@@ -17,7 +17,7 @@ export default function FileRow({ name, size, date, status, gradient, active = f
           active ? "border-iris/50 bg-raised" : "border-line bg-surface hover:bg-raised/70"
         }`}
       >
-        <span className={`grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${gradient} text-white`}>
+        <span className={`grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br ${gradient} text-white`}>
           <FileText className="size-5" />
         </span>
 

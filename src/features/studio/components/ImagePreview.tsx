@@ -19,7 +19,7 @@ export default function ImagePreview({
 }: ImagePreviewProps) {
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-magenta/25 via-iris/15 to-cobalt/25">
+      <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-linear-to-br from-magenta/25 via-iris/15 to-cobalt/25">
         {url ? (
           <Image src={url} alt="Generated image" fill className="object-cover" sizes="640px" />
         ) : (

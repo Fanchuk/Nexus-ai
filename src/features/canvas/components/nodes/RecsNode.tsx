@@ -18,7 +18,7 @@ export default function RecsNode({ data }: NodeProps<CardNode>) {
               key={item.title}
               className="flex items-center gap-3 rounded-xl border border-line bg-raised/60 px-3 py-2.5"
             >
-              <span className="size-3 shrink-0 rounded-full bg-gradient-to-br from-iris to-magenta" />
+              <span className="size-3 shrink-0 rounded-full bg-linear-to-br from-iris to-magenta" />
               <span className="truncate text-xs">{item.title}</span>
             </li>
           ))}

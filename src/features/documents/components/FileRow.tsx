@@ -36,7 +36,7 @@ export default function FileRow({ file, active, onSelect }: FileRowProps) {
         }`}
       >
         <span
-          className={`grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${gradients[file.kind]} text-white`}
+          className={`grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br ${gradients[file.kind]} text-white`}
         >
           <Icon className="size-5" />
         </span>

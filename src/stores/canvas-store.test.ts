@@ -1,17 +1,19 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { useCanvasStore } from "./canvas-store";
+import { CanvasCard, CanvasEdge } from "@/features/canvas/types";
 
-const mockCard = {
+const mockCard: CanvasCard = {
   id: "card-1",
-  type: "WEB" as const,
-  status: "DONE" as const,
-  position: { x: 0, y: 0 },
+  type: "WEB",
+  status: "DONE",
+  title: "Search the web",
   prompt: "test prompt",
+  x: 0,
+  y: 0,
   data: {},
-  createdAt: new Date().toISOString(),
 };
 
-const mockEdge = {
+const mockEdge: CanvasEdge = {
   id: "edge-1",
   sourceId: "card-1",
   targetId: "card-2",
@@ -39,6 +41,25 @@ describe("useCanvasStore", () => {
     useCanvasStore.getState().addCard(mockCard);
     expect(useCanvasStore.getState().cards).toHaveLength(1);
     expect(useCanvasStore.getState().cards[0].id).toBe("card-1");
+  });
+
+  it("replaceCard замінює тимчасову картку на серверну", () => {
+    useCanvasStore.getState().addCard({ ...mockCard, id: "temp-1" });
+    useCanvasStore.getState().replaceCard("temp-1", mockCard);
+
+    const { cards } = useCanvasStore.getState();
+    expect(cards).toHaveLength(1);
+    expect(cards[0].id).toBe("card-1");
+  });
+
+  it("patchCardData зливає дані, не затираючи попередні", () => {
+    useCanvasStore.getState().addCard(mockCard);
+    useCanvasStore.getState().patchCardData("card-1", { answer: "перша частина" });
+    useCanvasStore.getState().patchCardData("card-1", { sources: [] });
+
+    const card = useCanvasStore.getState().cards[0];
+    expect(card.data.answer).toBe("перша частина");
+    expect(card.data.sources).toEqual([]);
   });
 
   it("removeCard видаляє картку і пов'язані ребра", () => {

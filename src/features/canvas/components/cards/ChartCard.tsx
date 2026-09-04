@@ -8,7 +8,7 @@ export default function ChartCard() {
       innerClassName="p-4"
     >
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-3 rounded-full bg-gradient-to-br from-mint to-acid" />
+        <span className="size-3 rounded-full bg-linear-to-br from-mint to-acid" />
         <h3 className="text-sm">Generated chart</h3>
       </div>
 
@@ -17,7 +17,7 @@ export default function ChartCard() {
           <div
             key={height}
             style={{ height: `${height}%` }}
-            className="flex-1 rounded-md bg-gradient-to-t from-mint/20 to-mint/70 transition-all duration-300 hover:to-acid"
+            className="flex-1 rounded-md bg-linear-to-t from-mint/20 to-mint/70 transition-all duration-300 hover:to-acid"
           />
         ))}
       </div>

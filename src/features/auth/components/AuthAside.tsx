@@ -20,7 +20,7 @@ export function AuthAside() {
                 i === 1 ? "mk-float-late ml-10" : "mk-float"
               }`}
             >
-              <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${card.tone}`}>
+              <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-linear-to-br ${card.tone}`}>
                 <Icon className="h-5 w-5 text-white" />
               </span>
               <span className="min-w-0">

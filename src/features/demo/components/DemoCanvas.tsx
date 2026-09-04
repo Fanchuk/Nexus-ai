@@ -12,8 +12,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RotateCcw } from "lucide-react";
-import { DEMO_FILLED, DEMO_NODES } from '@/features/demo/data'
-import DemoNode, { DemoNodeType } from '@/features/demo/components/DemoNode'
+import { DEMO_FILLED, DEMO_NODES } from "../data";
+import DemoNode, { DemoNodeType } from "./DemoNode";
 
 const nodeTypes = { WEB: DemoNode, CHART: DemoNode, RECS: DemoNode };
 
@@ -71,7 +71,7 @@ function DemoInner() {
   }, []);
 
   return (
-    <div className="relative h-105 w-full overflow-hidden rounded-2xl border border-line bg-ink sm:h-130">
+    <div className="relative h-[420px] w-full overflow-hidden rounded-2xl border border-line bg-ink sm:h-[520px]">
       <ReactFlow
         nodes={nodes}
         edges={edges}

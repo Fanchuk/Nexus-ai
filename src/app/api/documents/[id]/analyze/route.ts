@@ -4,6 +4,7 @@ import { getUser } from "@/lib/session";
 import { isOverLimit, trackUsage } from "@/lib/usage";
 import { getReadTime, parseDocument } from "@/lib/parse-document";
 import { CardData } from "@/features/canvas/types";
+import { indexDocument } from "@/lib/embeddings";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -30,6 +31,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       where: { id: file.id },
       data: { text: pages.join("\f"), pages: pages.length, status: "INDEXED" },
     });
+
+    await indexDocument(file.id, pages);
 
     const card = await prisma.card.findFirst({
       where: { id: cardId, type: "DOC", canvas: { userId: user.id } },

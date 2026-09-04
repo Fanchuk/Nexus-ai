@@ -35,7 +35,7 @@ export default function CommandPalette({ defaultMode, onClose }: CommandPaletteP
     <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-24 sm:pt-32">
       <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-xl animate-rise rounded-2xl bg-gradient-to-br from-iris to-magenta p-px">
+      <div className="relative w-full max-w-xl animate-rise rounded-2xl bg-linear-to-br from-iris to-magenta p-px">
         <div className="rounded-[15px] bg-surface">
           <div className="flex items-center gap-3 border-b border-line px-5 py-4">
             <Sparkles className="size-5 shrink-0 text-azure" />
@@ -69,7 +69,7 @@ export default function CommandPalette({ defaultMode, onClose }: CommandPaletteP
                   }`}
                 >
                   <span
-                    className={`grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${config.gradient} text-white`}
+                    className={`grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br ${config.gradient} text-white`}
                   >
                     <Icon className="size-5" />
                   </span>

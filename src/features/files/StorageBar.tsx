@@ -14,14 +14,14 @@ export default function StorageBar() {
 
       <div className="flex h-2 overflow-hidden rounded-full bg-raised">
         {segments.map((segment) => (
-          <div key={segment.label} className={`${segment.width} bg-gradient-to-r ${segment.gradient}`} />
+          <div key={segment.label} className={`${segment.width} bg-linear-to-r ${segment.gradient}`} />
         ))}
       </div>
 
       <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
         {segments.map((segment) => (
           <li key={segment.label} className="flex items-center gap-2 text-xs text-muted">
-            <span className={`size-2.5 rounded-full bg-gradient-to-br ${segment.gradient}`} />
+            <span className={`size-2.5 rounded-full bg-linear-to-br ${segment.gradient}`} />
             {segment.label}
           </li>
         ))}

@@ -9,7 +9,7 @@ export default function RecommendationsCard() {
       innerClassName="p-4"
     >
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-3 rounded-full bg-gradient-to-br from-iris to-magenta" />
+        <span className="size-3 rounded-full bg-linear-to-br from-iris to-magenta" />
         <h3 className="text-sm">Recommendations</h3>
       </div>
 
@@ -19,7 +19,7 @@ export default function RecommendationsCard() {
             key={width}
             className="flex items-center gap-3 rounded-xl border border-line bg-raised/60 px-3 py-2.5 transition-colors duration-300 hover:border-iris/50"
           >
-            <span className="size-3 shrink-0 rounded-full bg-gradient-to-br from-iris to-magenta" />
+            <span className="size-3 shrink-0 rounded-full bg-linear-to-br from-iris to-magenta" />
             <Skeleton className={`h-2 ${width}`} />
           </li>
         ))}

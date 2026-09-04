@@ -7,7 +7,7 @@ type RecommendationRowProps = {
 export default function RecommendationRow({ title, description, gradient }: RecommendationRowProps) {
   return (
     <li className="group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 transition-all duration-300 hover:border-iris/50 hover:shadow-[0_0_30px_-14px_#9747d2]">
-      <span className={`size-11 shrink-0 rounded-xl bg-gradient-to-br ${gradient}`} />
+      <span className={`size-11 shrink-0 rounded-xl bg-linear-to-br ${gradient}`} />
 
       <span className="min-w-0 flex-1">
         <span className="block text-sm">{title}</span>

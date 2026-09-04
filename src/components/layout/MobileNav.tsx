@@ -33,7 +33,7 @@ export default function MobileNav() {
                 <span className="relative">
                   <Icon className="size-5" />
                   {active ? (
-                    <span className="absolute -bottom-1.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-gradient-to-r from-iris to-magenta" />
+                    <span className="absolute -bottom-1.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-linear-to-r from-iris to-magenta" />
                   ) : null}
                 </span>
                 {link.label}

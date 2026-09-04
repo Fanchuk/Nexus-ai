@@ -39,7 +39,7 @@ export function SignUpForm() {
         error={errors.password?.message} {...register("password")} />
 
       <button type="submit" disabled={loading}
-        className="w-full rounded-xl bg-gradient-to-r from-cobalt to-iris py-3 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60">
+        className="w-full rounded-xl bg-linear-to-r from-cobalt to-iris py-3 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60">
         {loading ? <Spinner size={16} className="mx-auto" /> : "Create account"}
       </button>
     </form>

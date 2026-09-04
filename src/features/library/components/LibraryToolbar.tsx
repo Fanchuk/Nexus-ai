@@ -65,7 +65,7 @@ export default function LibraryToolbar() {
       <button
         onClick={createCanvas}
         disabled={creating}
-        className="flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-iris to-magenta px-4 text-sm text-white transition-all hover:shadow-[0_0_26px_-8px_#ff2c9a] disabled:opacity-60"
+        className="flex h-11 items-center gap-2 rounded-xl bg-linear-to-r from-iris to-magenta px-4 text-sm text-white transition-all hover:shadow-[0_0_26px_-8px_#ff2c9a] disabled:opacity-60"
       >
         {creating ? <Spinner size={16} /> : <Plus className="size-4" />}
         New canvas

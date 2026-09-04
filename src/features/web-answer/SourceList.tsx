@@ -12,7 +12,7 @@ export default function SourceList() {
         {sources.map((source) => (
           <li key={source.domain} className="shrink-0">
             <a className="flex w-64 items-center gap-3 rounded-xl border border-line bg-surface p-3 transition-colors duration-300 hover:border-azure/50">
-              <span className={`size-8 shrink-0 rounded-lg bg-gradient-to-br ${source.color}`} />
+              <span className={`size-8 shrink-0 rounded-lg bg-linear-to-br ${source.color}`} />
               <span className="min-w-0">
                 <span className="block truncate text-sm">{source.title}</span>
                 <span className="block truncate text-xs text-muted">{source.domain}</span>

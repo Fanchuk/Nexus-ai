@@ -12,7 +12,7 @@ export default function GradientCard({
   children,
 }: GradientCardProps) {
   return (
-    <div className={`rounded-2xl bg-gradient-to-br p-px ${gradient} ${className}`}>
+    <div className={`rounded-2xl bg-linear-to-br p-px ${gradient} ${className}`}>
       <div className={`h-full rounded-[15px] bg-surface ${innerClassName}`}>{children}</div>
     </div>
   );

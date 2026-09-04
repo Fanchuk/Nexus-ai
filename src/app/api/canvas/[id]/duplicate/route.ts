@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/session";
 
@@ -14,16 +15,17 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   });
   if (!source) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const copy = await prisma.canvas.create({
-    data: { userId: user.id, title: `${source.title} (copy)` },
-  });
+  const copyId = randomUUID();
+  const ids = new Map(source.cards.map((card) => [card.id, randomUUID()]));
 
-  const ids = new Map<string, string>();
-
-  for (const card of source.cards) {
-    const created = await prisma.card.create({
-      data: {
-        canvasId: copy.id,
+  await prisma.$transaction([
+    prisma.canvas.create({
+      data: { id: copyId, userId: user.id, title: `${source.title} (copy)` },
+    }),
+    prisma.card.createMany({
+      data: source.cards.map((card) => ({
+        id: ids.get(card.id)!,
+        canvasId: copyId,
         type: card.type,
         status: card.status,
         title: card.title,
@@ -31,19 +33,16 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
         x: card.x,
         y: card.y,
         data: card.data ?? {},
-      },
-    });
+      })),
+    }),
+    prisma.cardEdge.createMany({
+      data: source.edges.map((edge) => ({
+        canvasId: copyId,
+        sourceId: ids.get(edge.sourceId)!,
+        targetId: ids.get(edge.targetId)!,
+      })),
+    }),
+  ]);
 
-    ids.set(card.id, created.id);
-  }
-
-  await prisma.cardEdge.createMany({
-    data: source.edges.map((edge: { sourceId: string; targetId: string }) => ({
-      canvasId: copy.id,
-      sourceId: ids.get(edge.sourceId)!,
-      targetId: ids.get(edge.targetId)!,
-    })),
-  });
-
-  return NextResponse.json({ id: copy.id });
+  return NextResponse.json({ id: copyId });
 }

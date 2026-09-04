@@ -27,7 +27,7 @@ export function GradientButton({
   return (
     <Link
       href={href}
-      className={`${base} bg-gradient-to-r from-[#2a35d6] via-[#6b4ee0] to-[#9747d2] text-white shadow-[0_8px_30px_-10px_#9747d2] hover:shadow-[0_10px_40px_-8px_#2a35d6]`}
+      className={`${base} bg-linear-to-r from-[#2a35d6] via-[#6b4ee0] to-[#9747d2] text-white shadow-[0_8px_30px_-10px_#9747d2] hover:shadow-[0_10px_40px_-8px_#2a35d6]`}
     >
       <span className="relative z-10">{children}</span>
       <span className="absolute inset-y-0 left-0 w-1/3 bg-white/25 opacity-0 transition-opacity duration-200 group-hover:animate-[mk-sheen_0.9s_ease-out] group-hover:opacity-100" />

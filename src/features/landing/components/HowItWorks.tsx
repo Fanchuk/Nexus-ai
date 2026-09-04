@@ -11,7 +11,7 @@ export function HowItWorks() {
         {steps.map((step, i) => (
           <Reveal key={step.number} delay={i * 100}>
             <div className="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-white/25">
-              <span className="bg-gradient-to-br from-[#7aa2ff] to-[#9747d2] bg-clip-text text-4xl font-semibold text-transparent">
+              <span className="bg-linear-to-br from-[#7aa2ff] to-[#9747d2] bg-clip-text text-4xl font-semibold text-transparent">
                 {step.number}
               </span>
               <h3 className="mt-4 text-xl font-medium text-white">{step.title}</h3>

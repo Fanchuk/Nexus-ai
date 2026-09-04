@@ -82,7 +82,7 @@ export default function AnswerActions({
         <button
           onClick={ask}
           disabled={busy}
-          className="grid h-7 min-w-14 place-items-center rounded-lg bg-gradient-to-r from-cobalt to-azure px-3 text-xs text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="grid h-7 min-w-14 place-items-center rounded-lg bg-linear-to-r from-cobalt to-azure px-3 text-xs text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {loading === "follow" ? <Spinner size={14} /> : "Send"}
         </button>

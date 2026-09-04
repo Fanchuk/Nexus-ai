@@ -138,7 +138,7 @@ export default function SettingsForm({
                 key={item.name}
                 className="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-raised/60 p-4"
               >
-                <span className={`size-10 shrink-0 rounded-xl bg-gradient-to-br ${item.gradient}`} />
+                <span className={`size-10 shrink-0 rounded-xl bg-linear-to-br ${item.gradient}`} />
                 <span className="min-w-0 flex-1 text-sm">{item.name}</span>
                 <span
                   className={`rounded-full border px-2.5 py-1 text-xs ${
@@ -167,7 +167,7 @@ export default function SettingsForm({
                     style={{
                       width: `${Math.min(100, (metric.value / metric.limit) * 100)}%`,
                     }}
-                    className={`h-full bg-gradient-to-r ${metric.gradient}`}
+                    className={`h-full bg-linear-to-r ${metric.gradient}`}
                   />
                 </div>
               </div>

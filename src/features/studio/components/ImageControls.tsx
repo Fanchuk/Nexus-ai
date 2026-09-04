@@ -87,7 +87,7 @@ export default function ImageControls({
       <button
         onClick={onGenerate}
         disabled={generating || !prompt.trim()}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-iris to-magenta px-5 py-3 text-sm text-white transition-all hover:shadow-[0_0_28px_-6px_#ff2c9a] disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-iris to-magenta px-5 py-3 text-sm text-white transition-all hover:shadow-[0_0_28px_-6px_#ff2c9a] disabled:opacity-50"
       >
         {generating ? <Spinner size={16} /> : <Sparkles className="size-4" />}
         Generate

@@ -12,7 +12,7 @@ export default function ImageNode({ data }: NodeProps<CardNode>) {
 
   return (
     <NodeShell card={card}>
-      <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-magenta/25 via-iris/20 to-cobalt/25">
+      <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-xl bg-linear-to-br from-magenta/25 via-iris/20 to-cobalt/25">
         {url ? (
           <Image src={url} alt={card.prompt} fill className="object-cover" sizes="300px" />
         ) : (

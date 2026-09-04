@@ -9,7 +9,7 @@ export default function CanvasEmptyState() {
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
       <div className="pointer-events-auto grid place-items-center text-center">
-        <span className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-iris to-magenta">
+        <span className="grid size-14 place-items-center rounded-2xl bg-linear-to-br from-iris to-magenta">
           <Sparkles className="size-6 text-white" />
         </span>
         <h2 className="mt-5 text-base">Your canvas is empty</h2>
@@ -18,7 +18,7 @@ export default function CanvasEmptyState() {
         </p>
         <button
           onClick={() => setPaletteOpen(true)}
-          className="mt-6 rounded-xl bg-gradient-to-r from-iris to-magenta px-5 py-3 text-sm text-white"
+          className="mt-6 rounded-xl bg-linear-to-r from-iris to-magenta px-5 py-3 text-sm text-white"
         >
           Start with a prompt
         </button>

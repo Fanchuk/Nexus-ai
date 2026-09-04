@@ -30,7 +30,7 @@ export function Navbar() {
                 className="group relative text-sm text-white/70 transition-colors hover:text-white"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-[#2a35d6] to-[#9747d2] transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 h-px w-0 bg-linear-to-r from-[#2a35d6] to-[#9747d2] transition-all duration-300 group-hover:w-full" />
               </Link>
             </li>
           ))}
@@ -77,7 +77,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/sign-up"
-              className="flex-1 rounded-full bg-gradient-to-r from-[#2a35d6] to-[#9747d2] py-2.5 text-center text-sm text-white"
+              className="flex-1 rounded-full bg-linear-to-r from-[#2a35d6] to-[#9747d2] py-2.5 text-center text-sm text-white"
             >
               Get started
             </Link>

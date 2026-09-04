@@ -18,7 +18,7 @@ export default function ChartNode({ data }: NodeProps<CardNode>) {
             <div key={point.label} className="flex flex-1 flex-col items-end gap-1">
               <div
                 style={{ height: `${Math.max((point.value / max) * 100, 8)}px` }}
-                className="w-full rounded-md bg-gradient-to-t from-mint/20 to-mint/70"
+                className="w-full rounded-md bg-linear-to-t from-mint/20 to-mint/70"
               />
               <span className="w-full truncate text-center text-[9px] text-muted leading-tight">
                 {point.label.split(" ")[0]}

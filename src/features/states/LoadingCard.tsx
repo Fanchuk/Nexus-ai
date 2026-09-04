@@ -5,7 +5,7 @@ export default function LoadingCard() {
   return (
     <GradientCard gradient="from-magenta to-iris" innerClassName="p-4">
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-3 animate-pulse rounded-full bg-gradient-to-br from-magenta to-iris" />
+        <span className="size-3 animate-pulse rounded-full bg-linear-to-br from-magenta to-iris" />
         <h3 className="text-sm text-muted">Generating image…</h3>
       </div>
 

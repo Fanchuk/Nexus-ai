@@ -9,7 +9,7 @@ export default function WebAnswerCard() {
       innerClassName="p-4"
     >
       <div className="mb-4 flex items-center gap-2">
-        <span className="size-3 rounded-full bg-gradient-to-br from-cobalt to-azure" />
+        <span className="size-3 rounded-full bg-linear-to-br from-cobalt to-azure" />
         <h3 className="text-sm">Web answer</h3>
       </div>
 

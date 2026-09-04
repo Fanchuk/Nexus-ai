@@ -40,7 +40,7 @@ export default function HistoryItem({ entry }: { entry: HistoryEntry }) {
   return (
     <li className="relative">
       <span
-        className={`absolute -left-[31px] top-6 size-2.5 rounded-full bg-gradient-to-br ${config.gradient}`}
+        className={`absolute -left-[31px] top-6 size-2.5 rounded-full bg-linear-to-br ${config.gradient}`}
       />
 
       <div
@@ -48,7 +48,7 @@ export default function HistoryItem({ entry }: { entry: HistoryEntry }) {
         className="group flex cursor-pointer items-center gap-4 rounded-2xl border border-line bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-iris/40"
       >
         <span
-          className={`grid size-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${config.gradient} text-white`}
+          className={`grid size-11 shrink-0 place-items-center rounded-xl bg-linear-to-br ${config.gradient} text-white`}
         >
           <Icon className="size-5" />
         </span>

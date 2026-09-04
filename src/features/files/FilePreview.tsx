@@ -3,7 +3,7 @@ import { Download, Trash2 } from "lucide-react";
 export default function FilePreview() {
   return (
     <aside className="rounded-2xl border border-line bg-surface p-5">
-      <div className="aspect-[3/4] space-y-3 overflow-hidden rounded-xl bg-gradient-to-b from-gold/12 to-transparent p-5">
+      <div className="aspect-[3/4] space-y-3 overflow-hidden rounded-xl bg-linear-to-b from-gold/12 to-transparent p-5">
         {["w-8/12 h-3", "w-full h-2", "w-full h-2", "w-9/12 h-2", "w-full h-8", "w-full h-2"].map((line, index) => (
           <div key={index} className={`rounded-md bg-gold/55 ${line}`} />
         ))}

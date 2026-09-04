@@ -26,7 +26,7 @@ export default function SourceList({ sources }: SourceListProps) {
               className="flex w-64 items-center gap-3 rounded-xl border border-line bg-surface p-3 transition-colors duration-300 hover:border-azure/50"
             >
               <span
-                className={`size-8 shrink-0 rounded-lg bg-gradient-to-br ${gradients[index % gradients.length]}`}
+                className={`size-8 shrink-0 rounded-lg bg-linear-to-br ${gradients[index % gradients.length]}`}
               />
               <span className="min-w-0">
                 <span className="block truncate text-sm">{source.title}</span>

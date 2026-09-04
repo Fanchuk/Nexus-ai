@@ -12,7 +12,7 @@ export default function PanelHeader({ icon, title, gradient, meta }: PanelHeader
   return (
     <header className="mb-6 flex flex-wrap items-center gap-3">
       <span
-        className={`grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${gradient} text-white`}
+        className={`grid size-10 shrink-0 place-items-center rounded-xl bg-linear-to-br ${gradient} text-white`}
       >
         {icon}
       </span>

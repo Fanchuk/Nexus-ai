@@ -100,7 +100,7 @@ export default function DocInsights({
           <button
             onClick={submit}
             disabled={loading !== null}
-            className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-gold to-magenta text-white transition-transform hover:scale-105 disabled:opacity-50"
+            className="grid size-12 shrink-0 place-items-center rounded-xl bg-linear-to-br from-gold to-magenta text-white transition-transform hover:scale-105 disabled:opacity-50"
           >
             {loading === "qa" ? <Spinner size={18} /> : <ArrowUp className="size-5" />}
           </button>

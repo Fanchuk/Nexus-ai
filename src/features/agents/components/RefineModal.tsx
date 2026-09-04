@@ -52,7 +52,7 @@ export default function RefineModal({ onClose, onApply }: RefineModalProps) {
 
         <button
           onClick={() => onApply(focus)}
-          className="mt-5 w-full rounded-xl bg-gradient-to-r from-iris to-magenta py-3 text-sm text-white transition-opacity hover:opacity-90"
+          className="mt-5 w-full rounded-xl bg-linear-to-r from-iris to-magenta py-3 text-sm text-white transition-opacity hover:opacity-90"
         >
           Regenerate
         </button>

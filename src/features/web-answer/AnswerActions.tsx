@@ -23,7 +23,7 @@ export default function AnswerActions() {
           className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted"
           placeholder="Ask a follow-up…"
         />
-        <button className="rounded-lg bg-gradient-to-r from-cobalt to-azure px-3 py-1.5 text-xs text-white transition-opacity hover:opacity-90">
+        <button className="rounded-lg bg-linear-to-r from-cobalt to-azure px-3 py-1.5 text-xs text-white transition-opacity hover:opacity-90">
           Send
         </button>
       </div>

@@ -27,7 +27,7 @@ export default function RecommendationRow({
     <li className="group rounded-2xl border border-line bg-surface p-4 transition-all hover:border-iris/50">
       <div className="flex items-start gap-4">
         <span
-          className={`size-11 shrink-0 rounded-xl bg-gradient-to-br ${gradients[category] ?? "from-iris to-magenta"}`}
+          className={`size-11 shrink-0 rounded-xl bg-linear-to-br ${gradients[category] ?? "from-iris to-magenta"}`}
         />
 
         <div className="min-w-0 flex-1">

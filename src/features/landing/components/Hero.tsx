@@ -20,7 +20,7 @@ export function Hero() {
         <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
           Think, research
           <br />
-          <span className="bg-gradient-to-r from-[#7aa2ff] via-[#b18cff] to-[#19b5e0] bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-[#7aa2ff] via-[#b18cff] to-[#19b5e0] bg-clip-text text-transparent">
             and create with AI
           </span>
         </h1>
@@ -67,7 +67,7 @@ function HeroPreview() {
                 <span
                   className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
                     step.done
-                      ? "bg-gradient-to-br from-[#2a35d6] to-[#9747d2] text-white"
+                      ? "bg-linear-to-br from-[#2a35d6] to-[#9747d2] text-white"
                       : "bg-white/10 text-white/60"
                   }`}
                 >
