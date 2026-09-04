@@ -1,116 +1,92 @@
-"use client";
-import { useCallback, useMemo, useState } from "react";
-import {
-  Background,
-  BackgroundVariant,
-  Connection,
-  Edge,
-  NodeChange,
-  ReactFlow,
-  ReactFlowProvider,
-  addEdge,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { RotateCcw } from "lucide-react";
-import { DEMO_FILLED, DEMO_NODES } from '@/features/demo/data'
-import DemoNode, { DemoNodeType } from '@/features/demo/components/DemoNode'
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { ArrowRight } from "lucide-react";
 
-const nodeTypes = { WEB: DemoNode, CHART: DemoNode, RECS: DemoNode };
+const DemoCanvas = dynamic(() => import("@/features/demo/components/DemoCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-105 w-full animate-pulse rounded-2xl border border-line bg-surface sm:h-130" />
+  ),
+});
 
-function build(edges: Edge[]): DemoNodeType[] {
-  const targets = new Set(edges.map((edge) => edge.target));
-  return DEMO_NODES.map((node) => {
-    const inherited = targets.has(node.id);
-    return {
-      id: node.id,
-      type: node.data.kind,
-      position: node.position,
-      data: {
-        ...node.data,
-        inherited,
-        body: inherited ? DEMO_FILLED[node.id] ?? node.data.body : node.data.body,
-      },
-    };
-  });
-}
+const facts = [
+  { value: "5", label: "card types on a single canvas" },
+  { value: "~70%", label: "fewer external requests via Postgres cache" },
+  { value: "Zod", label: "validates model output to React" },
+];
 
-function DemoInner() {
-  const [edges, setEdges] = useState<Edge[]>([]);
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
-
-  const nodes = useMemo(
-    () =>
-      build(edges).map((node) => ({
-        ...node,
-        position: positions[node.id] ?? node.position,
-      })),
-    [edges, positions]
-  );
-
-  const onNodesChange = useCallback((changes: NodeChange<DemoNodeType>[]) => {
-    setPositions((prev) => {
-      const next = { ...prev };
-      let touched = false;
-      changes.forEach((change) => {
-        if (change.type === "position" && change.position) {
-          next[change.id] = change.position;
-          touched = true;
-        }
-      });
-      return touched ? next : prev;
-    });
-  }, []);
-
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((prev) => addEdge({ ...connection, animated: true }, prev));
-  }, []);
-
-  const reset = useCallback(() => {
-    setEdges([]);
-    setPositions({});
-  }, []);
-
+export default function HomePage() {
   return (
-    <div className="relative h-105 w-full overflow-hidden rounded-2xl border border-line bg-ink sm:h-130">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onConnect={onConnect}
-        fitView
-        fitViewOptions={{ padding: 0.25 }}
-        minZoom={0.4}
-        maxZoom={1.4}
-        panOnScroll={false}
-        zoomOnScroll={false}
-        preventScrolling={false}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={26} size={1} />
-      </ReactFlow>
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-3 sm:p-4">
-        <span className="rounded-full border border-line bg-surface/85 px-3 py-1.5 text-[11px] text-muted backdrop-blur-xl sm:text-xs">
-          Drag a card · connect from the right edge to another
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-16">
+      <header className="flex items-center justify-between gap-4">
+        <span className="flex items-center gap-2">
+          <span className="size-7 rounded-lg bg-gradient-to-br from-iris to-magenta" />
+          <span className="text-base font-medium">Nexus</span>
         </span>
-        {edges.length ? (
-          <button
-            onClick={reset}
-            className="pointer-events-auto flex items-center gap-2 rounded-full border border-line bg-surface/85 px-3 py-1.5 text-xs text-muted backdrop-blur-xl transition-colors hover:text-fg"
-          >
-            <RotateCcw className="size-3.5" />
-            Reset
-          </button>
-        ) : null}
-      </div>
-    </div>
-  );
-}
 
-export default function DemoCanvas() {
-  return (
-    <ReactFlowProvider>
-      <DemoInner />
-    </ReactFlowProvider>
+        <nav className="flex items-center gap-2 sm:gap-3">
+          <a
+            href="https://github.com/Metenchuk/Nexus-ai"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub repository"
+            className="grid size-10 place-items-center rounded-xl border border-line text-muted transition-colors hover:text-fg"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+              <path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.79 1.06.79 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" />
+            </svg>
+          </a>
+          <Link
+            href="/sign-in"
+            className="rounded-xl border border-line px-4 py-2.5 text-sm text-muted transition-colors hover:bg-raised hover:text-fg"
+          >
+            Sign in
+          </Link>
+        </nav>
+      </header>
+
+      <section className="mt-12 md:mt-20">
+        <h1 className="max-w-3xl text-balance text-3xl font-medium leading-tight sm:text-5xl md:text-6xl">
+          Every AI response is a{" "}
+          <span className="bg-gradient-to-r from-iris to-magenta bg-clip-text text-transparent">
+            card on the canvas
+          </span>
+          , not a line in a chat.
+        </h1>
+
+        <p className="mt-5 max-w-xl text-sm leading-6 text-muted sm:text-base sm:leading-7">
+          Draw an arrow from one card to another — the second inherits the first's content as context. The canvas below is live, try dragging it right here.
+        </p>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/sign-up"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-iris to-magenta px-5 py-3 text-sm text-white transition-all hover:shadow-[0_0_28px_-6px_#ff2c9a]"
+          >
+            Open your canvas
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </section>
+
+      <section className="mt-10 md:mt-14">
+        <DemoCanvas />
+      </section>
+
+      <section className="mt-10 grid gap-3 sm:grid-cols-3 md:mt-14">
+        {facts.map((fact) => (
+          <div key={fact.label} className="rounded-2xl border border-line bg-surface p-5">
+            <p className="bg-gradient-to-r from-iris to-magenta bg-clip-text text-2xl font-medium text-transparent">
+              {fact.value}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted">{fact.label}</p>
+          </div>
+        ))}
+      </section>
+
+      <footer className="mt-16 border-t border-line pt-6 text-sm text-muted">
+        Nazar Metenchuk · Next.js 16 · React Flow · Prisma
+      </footer>
+    </main>
   );
 }
