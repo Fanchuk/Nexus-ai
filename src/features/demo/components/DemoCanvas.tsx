@@ -1,4 +1,5 @@
 "use client";
+
 import { useCallback, useMemo, useState } from "react";
 import {
   Background,
@@ -9,6 +10,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   addEdge,
+  applyNodeChanges,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RotateCcw } from "lucide-react";
@@ -17,35 +19,29 @@ import DemoNode, { DemoNodeType } from "./DemoNode";
 
 const nodeTypes = { WEB: DemoNode, CHART: DemoNode, RECS: DemoNode };
 
-function build(edges: Edge[]): DemoNodeType[] {
-  const targets = new Set(edges.map((edge) => edge.target));
+function buildNodes(edges: Edge[], positions: Record<string, { x: number; y: number }>): DemoNodeType[] {
+  const targets = new Set(edges.map((e) => e.target));
+
   return DEMO_NODES.map((node) => {
     const inherited = targets.has(node.id);
     return {
       id: node.id,
       type: node.data.kind,
-      position: node.position,
+      position: positions[node.id] ?? node.position,
       data: {
         ...node.data,
         inherited,
-        body: inherited ? DEMO_FILLED[node.id] ?? node.data.body : node.data.body,
+        body: inherited ? (DEMO_FILLED[node.id] ?? node.data.body) : node.data.body,
       },
     };
   });
 }
 
-function DemoInner() {
+function DemoFlow() {
   const [edges, setEdges] = useState<Edge[]>([]);
   const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
 
-  const nodes = useMemo(
-    () =>
-      build(edges).map((node) => ({
-        ...node,
-        position: positions[node.id] ?? node.position,
-      })),
-    [edges, positions]
-  );
+  const nodes = useMemo(() => buildNodes(edges, positions), [edges, positions]);
 
   const onNodesChange = useCallback((changes: NodeChange<DemoNodeType>[]) => {
     setPositions((prev) => {
@@ -61,9 +57,11 @@ function DemoInner() {
     });
   }, []);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((prev) => addEdge({ ...connection, animated: true }, prev));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) =>
+      setEdges((prev) => addEdge({ ...connection, animated: true }, prev)),
+    []
+  );
 
   const reset = useCallback(() => {
     setEdges([]);
@@ -71,7 +69,7 @@ function DemoInner() {
   }, []);
 
   return (
-    <div className="relative h-[420px] w-full overflow-hidden rounded-2xl border border-line bg-ink sm:h-[520px]">
+    <div className="relative h-105 w-full overflow-hidden rounded-2xl border border-line bg-ink sm:h-130">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -89,10 +87,12 @@ function DemoInner() {
       >
         <Background variant={BackgroundVariant.Dots} gap={26} size={1} />
       </ReactFlow>
+
       <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-3 sm:p-4">
         <span className="rounded-full border border-line bg-surface/85 px-3 py-1.5 text-[11px] text-muted backdrop-blur-xl sm:text-xs">
           Drag a card · connect from the right edge to another
         </span>
+
         {edges.length ? (
           <button
             onClick={reset}
@@ -110,7 +110,7 @@ function DemoInner() {
 export default function DemoCanvas() {
   return (
     <ReactFlowProvider>
-      <DemoInner />
+      <DemoFlow />
     </ReactFlowProvider>
   );
 }
