@@ -26,8 +26,14 @@ export default function CommandPalette({ defaultMode, onClose }: CommandPaletteP
   }, [onClose]);
 
   function submit(selected: CardType) {
-    if (!value.trim()) return;
-    submitPrompt(selected, value.trim());
+    const text = value.trim();
+    const requiresText = ["WEB", "RECS", "CHART"].includes(selected);
+
+    if (!text && requiresText) {
+      return;
+    }
+
+    submitPrompt(selected, text);
     onClose();
   }
 
