@@ -9,6 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://neon.tech)
+[![pgvector](https://img.shields.io/badge/pgvector-HNSW-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![AI SDK](https://img.shields.io/badge/AI_SDK-v5-000000?style=flat-square&logo=vercel)](https://ai-sdk.dev)
 [![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev)
@@ -26,17 +27,18 @@ Most AI apps are a chat log — you ask, you scroll, you lose the answer.
 
 **Nexus** treats every AI result as a **card on an infinite canvas**. A web search, a generated chart, an AI image, a document analysis — each one becomes a block you can move, link, expand and reuse. Draw an arrow from one card to another and the second one inherits the first one's content as context: that is the graph of your thinking, not a transcript of it.
 
-Built as a portfolio project to demonstrate production patterns end-to-end — server-first data fetching with React Server Components, streaming AI responses, type-safe model output with Zod, optimistic UI, and a clean feature-based architecture.
+Built as a portfolio project to demonstrate production patterns end-to-end — server-first data fetching with React Server Components, streaming AI responses, RAG over documents with pgvector, type-safe model output with Zod, optimistic UI, and a clean feature-based architecture.
 
 **What makes it worth a look:**
 
-- **Infinite canvas** built on React Flow — pan, zoom, drag, connect, minimap, persisted positions
+- **Infinite canvas** built on React Flow — pan, zoom, drag, connect, minimap, persisted positions, node virtualization
 - **Streaming answers** that type themselves directly into a card while it sits on the board
 - **Context graph** — an edge between two cards feeds one card's output into the other's prompt
-- **Cited web search** — Serper results grounded through Gemini, with clickable source chips
-- **Real document Q&A** — PDF/DOCX/TXT parsed page by page, citations jump the preview to the page
-- **AI image studio** — parallel generation plus background removal, both on Nano Banana
+- **Cited web search** — Serper results grounded through Gemini, with clickable source chips and a Postgres query cache
+- **Document RAG** — PDF/DOCX/TXT chunked, embedded and searched with pgvector; citations jump the preview to the exact page
+- **AI image studio** — parallel generation plus background removal, both on one Gemini image model
 - **Typed AI output** — `generateObject` + Zod schemas, so charts and recommendations arrive as validated JSON, never parsed text
+- **PDF export** — the whole canvas exported as a real, selectable-text PDF built from state, not a screenshot
 
 ---
 
@@ -68,12 +70,6 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 | :---: | :---: |
 | ![History](public/history.png) | ![Settings](public/settings.png) |
 
-### Entry points
-
-| Landing | Sign in | Sign up |
-| :---: | :---: | :---: |
-| ![Landing](public/landing.png) | ![Sign in](public/sign-in.png) | ![Sign up](public/sign-up.png) |
-
 ---
 
 ## Features
@@ -82,12 +78,14 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 
 - Infinite board with pan, zoom, fit-view and a minimap, powered by **React Flow**
 - Five card types, each its own custom node: **Web answer**, **Chart**, **AI image**, **Document**, **Recommendations**
-- **Optimistic creation** — a card appears instantly with a temporary id and a `PENDING` status, then swaps for the real record from the server
+- **Optimistic creation** — a card appears instantly with a temporary id and a `PENDING` status, then swaps for the real record from the server; it rolls back if the request fails
 - **Streaming into the node** — answers are read chunk by chunk and written straight into the card while it sits on the board
 - **Context graph** — connect two cards and the target card's prompt is enriched with the source card's content on the server side
+- **Node virtualization** — only cards inside the viewport render, so the board stays smooth with many cards
 - Drag positions are saved with a debounced `PATCH`, so a reload restores the exact layout
 - Hover toolbar per card: regenerate, duplicate, expand, delete, and *turn into chart* on web answers
 - Keyboard: `⌘K` for the palette, `Delete` to remove a selection, `Esc` to close, space-drag to pan
+- **Interactive landing** — the homepage is a live read-only canvas: drag demo cards and connect them to see context inheritance before signing up
 
 ### Command palette
 
@@ -100,22 +98,23 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 - Serper returns the top five results; titles and snippets are passed to Gemini as grounding context
 - The model marks every fact with `[1]`, `[2]`, and the client swaps those markers for clickable domain chips
 - **Continue** appends a new paragraph, **follow-up** asks within the same sources, **Save** stars the card
-- Search results are cached in Postgres for an hour, keyed by the normalised query, to save API quota
+- Search results are cached in Postgres for an hour, keyed by the normalised query, cutting external API calls significantly
 
 ### Image studio
 
 - Parallel generation — the variations slider controls how many images are produced in one `Promise.all` on the server
-- **Remove background** runs on the same image model with an editing instruction, no third-party service
+- **Remove background** runs on the same Gemini image model via a multimodal editing message, no third-party service
 - Bytes go to UploadThing; the database stores only the URL
 - Style and ratio default to the values from user settings
 
-### Document analysis
+### Document analysis (RAG)
 
 - Drag-and-drop upload of PDF, DOCX or TXT through UploadThing
-- `pdf-parse` extracts text **page by page**, `mammoth` handles DOCX — the preview shows real page content
-- Three tabs — **Summary**, **Key points**, **Q&A** — each a different prompt over the same text, cached in the card so a second click costs nothing
-- Page markers `[p.8]` in an answer scroll the preview to that page
-- Pages, citations and read time are computed at parse time, not by the model
+- `pdf-parse` extracts text **page by page**, `mammoth` handles DOCX
+- Text is chunked with overlap, embedded, and stored in **pgvector** with an HNSW index
+- **Q&A** embeds the question and retrieves the top matching chunks by cosine distance; **Summary** and **Key points** run over the full text
+- Each chunk keeps its page number, so a `[p.8]` marker in an answer scrolls the preview to that page
+- Answers are cached in the card, so a second click costs nothing
 
 ### Recommendations
 
@@ -126,7 +125,7 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 
 ### Workspace
 
-- **Library** — canvas grid with previews drawn from real card types and coordinates, server-side search, filters, rename, duplicate (cards *and* edges) and delete
+- **Library** — canvas grid with previews drawn from real card types and coordinates, server-side search, filters, rename, duplicate (cards *and* edges in one transaction) and delete
 - **Files** — everything uploaded, storage broken down by type, preview panel, download, delete from storage and database, and *Ask this file* to open it as a card
 - **History** — prompts grouped by day, click to focus the exact card on its canvas, rerun to repeat a prompt, clear all
 - **Settings** — profile and avatar, model and language preferences that the API routes actually read, accent gradient applied through CSS variables, live integration status and real monthly usage counters
@@ -137,6 +136,7 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 - **Custom toast system** — a Zustand store plus a portal, callable from anywhere without a provider
 - **Custom SVG spinner** and a branded 404 page — zero UI dependencies for feedback states
 - **Usage limits** — AI routes check the monthly counter and return `429` before calling the model
+- **PDF export** — `jspdf` loaded via dynamic import, so it never sits in the initial bundle
 
 ---
 
@@ -149,7 +149,7 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 | Framework | Next.js 16 (App Router, RSC, Route Handlers) |
 | UI | React 19, Tailwind CSS v4 |
 | Language | TypeScript (strict) |
-| Database | PostgreSQL (Neon) + Prisma 7 |
+| Database | PostgreSQL (Neon) + Prisma 7 + pgvector |
 | Auth | Better Auth (Google, GitHub, credentials) |
 | Deployment | Vercel |
 
@@ -157,9 +157,10 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 
 | Purpose | Technology |
 | --- | --- |
-| SDK | Vercel AI SDK v5 (`streamText`, `generateText`, `generateObject`) |
-| Text model | Google Gemini 2.5 Flash / Flash-Lite / Pro |
-| Image model | Gemini Flash Image (Nano Banana) — generation and editing |
+| SDK | Vercel AI SDK v5 (`streamText`, `generateText`, `generateObject`, `embed`, `embedMany`) |
+| Text model | Google Gemini (fast / balanced / deep tiers) |
+| Image model | Gemini image model — generation and editing |
+| Embeddings | Gemini embedding model, stored in pgvector |
 | Web search | Serper (Google Search API) |
 | Schema validation | Zod 4 — shared between forms and model output |
 
@@ -172,6 +173,7 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 | URL state | nuqs (filters, search, pagination) |
 | Forms | React Hook Form + Zod resolvers |
 | File uploads | UploadThing |
+| PDF export | jspdf (dynamic import) |
 | Icons | Lucide React |
 | Dates | date-fns |
 | Utilities | use-debounce, nanoid |
@@ -181,6 +183,7 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 | Purpose | Technology |
 | --- | --- |
 | Document parsing | pdf-parse (per page), mammoth (DOCX) |
+| Vector search | pgvector with an HNSW index (cosine distance) |
 | Object storage | UploadThing |
 | Search cache | PostgreSQL table with a one-hour TTL |
 | Rate limiting | Monthly usage counters per user |
@@ -212,7 +215,8 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
     ▼              ▼               ▼               ▼
 ┌────────┐  ┌────────────┐  ┌───────────┐  ┌─────────────┐
 │ Prisma │  │   Gemini   │  │  Serper   │  │ UploadThing │
-│  Neon  │  │  AI SDK v5 │  │  search   │  │   storage   │
+│ Neon + │  │  AI SDK v5 │  │  search   │  │   storage   │
+│pgvector│  │            │  │           │  │             │
 └────────┘  └────────────┘  └───────────┘  └─────────────┘
 ```
 
@@ -225,107 +229,11 @@ Built as a portfolio project to demonstrate production patterns end-to-end — s
 | One `Card` model with a `Json` data field | Five card types share one table; the type decides the shape of `data` and which node renders it. No polymorphic joins. |
 | Zustand as the single source of truth on the canvas | React Flow nodes are derived from the store with `useMemo`, so there is no second state to keep in sync. |
 | Context resolved on the server | The generation route looks up incoming edges itself — the client never assembles prompts, and the logic lives in one place. |
-| No vector database | Gemini's context window fits a whole document, so pages are injected with `[p.N]` markers instead. pgvector is a documented next step, not premature work. |
+| pgvector added only when needed | Started without vectors — Gemini's context window fit whole documents. Added RAG once documents outgrew the window, and kept a hybrid: retrieval only for Q&A, full text for summaries. |
+| `Unsupported("vector")` + raw SQL | Prisma has no native vector type, so the column is declared `Unsupported` and read/written via `$queryRaw` with the `<=>` cosine-distance operator. |
 | `generateObject` for structured output | Charts and recommendations are validated by Zod before they reach React. No `JSON.parse` in a `try/catch`. |
-| nuqs with `shallow: false` for lists | Search and filters run in SQL and the URL is shareable — no client-side fetching layer needed for read-only pages. |
+| Pre-generated ids for canvas duplicate | `createMany` is one round-trip instead of N, but returns no ids — so ids are generated up front with `randomUUID` to keep the edge mapping, all inside a transaction. |
 | Search cache in Postgres | An hourly TTL on a normalised query key saves API quota without adding Redis to the stack. |
-
----
-
-## Project Structure
-
-```
-nexus-ai/
-├─ prisma/
-│  └─ schema.prisma
-│
-├─ public/                         README screenshots and static assets
-│
-└─ src/
-   ├─ app/
-   │  ├─ (auth)/
-   │  │  ├─ layout.tsx             redirects signed-in users to the canvas
-   │  │  ├─ sign-in/page.tsx
-   │  │  └─ sign-up/page.tsx
-   │  │
-   │  ├─ (app)/
-   │  │  ├─ layout.tsx             sidebar, mobile nav, accent CSS variables
-   │  │  └─ app/
-   │  │     ├─ canvas/page.tsx
-   │  │     ├─ canvas/web/page.tsx
-   │  │     ├─ canvas/image/page.tsx
-   │  │     ├─ canvas/document/page.tsx
-   │  │     ├─ canvas/recommendations/page.tsx
-   │  │     ├─ library/page.tsx
-   │  │     ├─ files/page.tsx
-   │  │     ├─ history/page.tsx
-   │  │     └─ settings/page.tsx
-   │  │
-   │  ├─ api/
-   │  │  ├─ auth/[...all]/route.ts
-   │  │  ├─ uploadthing/{core.ts, route.ts}
-   │  │  ├─ canvas/route.ts
-   │  │  ├─ canvas/[id]/route.ts
-   │  │  ├─ canvas/[id]/cards/route.ts
-   │  │  ├─ canvas/[id]/duplicate/route.ts
-   │  │  ├─ cards/[id]/route.ts
-   │  │  ├─ edges/route.ts
-   │  │  ├─ search/route.ts                    streaming answer + sources
-   │  │  ├─ chart/route.ts                     generateObject
-   │  │  ├─ image/route.ts                     parallel generation
-   │  │  ├─ image/edit/route.ts                background removal
-   │  │  ├─ documents/[id]/analyze/route.ts    parsing and indexing
-   │  │  ├─ documents/ask/route.ts             summary · points · Q&A
-   │  │  ├─ recommendations/route.ts
-   │  │  ├─ files/[id]/route.ts
-   │  │  ├─ files/ask/route.ts
-   │  │  ├─ history/route.ts
-   │  │  ├─ history/rerun/route.ts
-   │  │  ├─ settings/route.ts
-   │  │  └─ account/route.ts
-   │  │
-   │  ├─ layout.tsx
-   │  ├─ page.tsx
-   │  ├─ not-found.tsx
-   │  └─ globals.css
-   │
-   ├─ features/
-   │  ├─ auth/         components · schema.ts
-   │  ├─ canvas/       components/nodes · hooks · server · config.ts · types.ts
-   │  ├─ search/       components · hooks · server · types.ts
-   │  ├─ studio/       components · hooks · server · types.ts
-   │  ├─ documents/    components · hooks · server · types.ts
-   │  ├─ agents/       components · server
-   │  ├─ library/      components · server · types.ts
-   │  ├─ history/      components · server · types.ts
-   │  ├─ settings/     components · server · accents.ts · types.ts
-   │  └─ landing/      components · data.ts
-   │
-   ├─ components/
-   │  ├─ ui/           Toaster · Spinner · ConfirmModal · PageHeader · PanelHeader · Toggle · Skeleton
-   │  └─ layout/       Sidebar · MobileNav
-   │
-   ├─ stores/
-   │  ├─ canvas-store.ts        cards, edges, palette, optimistic updates
-   │  └─ toast-store.ts         custom notifications, no dependencies
-   │
-   ├─ lib/
-   │  ├─ prisma.ts              singleton client
-   │  ├─ auth.ts                Better Auth server config
-   │  ├─ auth-client.ts         Better Auth React client
-   │  ├─ session.ts             getUser() helper
-   │  ├─ ai.ts                  Gemini providers and model selection
-   │  ├─ image-gen.ts           generation and editing, upload included
-   │  ├─ serper.ts              web search with a database cache
-   │  ├─ parse-document.ts      PDF / DOCX / TXT to pages
-   │  ├─ uploadthing.ts         server SDK
-   │  ├─ uploadthing-client.ts  React helpers
-   │  ├─ usage.ts               counters and monthly limits
-   │  └─ api.ts                 error helper for fetch responses
-   │
-   ├─ types/
-   └─ middleware.ts             protects /app/*
-```
 
 ---
 
@@ -338,6 +246,7 @@ nexus-ai/
 | `Canvas` | A board — one user can have many |
 | `Card` | Any AI block: type, status, position, prompt and a `Json` payload |
 | `CardEdge` | A directed link between two cards — the context graph |
+| `Chunk` | A document chunk with its page number and a `vector(768)` embedding |
 | `Prompt` | Every submission, powering the History page and rerun |
 | `File` | Uploads — key, URL, size, kind, status, extracted text, pages |
 | `Usage` | Monthly counters per user: text requests, images, indexed pages |
@@ -353,8 +262,8 @@ nexus-ai/
 ### Prerequisites
 
 - Node.js 20+
-- A PostgreSQL database — a free [Neon](https://neon.tech) project works
-- A [Google AI Studio](https://aistudio.google.com/apikey) key (free tier)
+- A PostgreSQL database with the `vector` extension — a free [Neon](https://neon.tech) project works
+- A [Google AI Studio](https://aistudio.google.com/apikey) key
 - A [Serper](https://serper.dev) key (2,500 free searches)
 - An [UploadThing](https://uploadthing.com) app
 - Google and GitHub OAuth applications
@@ -395,6 +304,8 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
+The `vector` extension is created by the migration. If your provider needs it enabled manually, run `CREATE EXTENSION IF NOT EXISTS vector;` once, then re-run the migration.
+
 ### 4. Run
 
 ```bash
@@ -409,10 +320,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Start the development server (Turbopack) |
+| `npm run dev` | Start the development server |
 | `npm run build` | Type-check and build for production |
 | `npm run start` | Run the production build |
 | `npm run lint` | Lint with ESLint |
+| `npm run test` | Run unit tests (Vitest) |
+| `npm run test:watch` | Run tests in watch mode |
 | `npx prisma studio` | Inspect the database |
 | `npx prisma migrate dev` | Apply schema changes |
 
@@ -424,18 +337,18 @@ Open [http://localhost:3000](http://localhost:3000).
 2. Add every environment variable from the list above, setting `AUTH_URL` to the production domain
 3. Add the production callback URLs to the Google and GitHub OAuth apps:
    `https://nexus-ai-chi-orcin.vercel.app/api/auth/callback/google` and `.../github`
-4. `prisma generate` runs automatically during the build via `postinstall`
+4. `prisma generate` runs automatically during the build
 5. Run `npx prisma migrate deploy` against the production database
 
 ---
 
 ## Roadmap
 
-- [ ] **pgvector retrieval** — chunk and embed documents once they outgrow the context window
+- [x] **pgvector retrieval** — chunk and embed documents, search with an HNSW cosine index
+- [x] **PDF export** — the canvas exported as a real, selectable-text document
+- [x] **Test suite** — Vitest unit tests for the canvas store, wired into GitHub Actions CI
 - [ ] **Realtime collaboration** — shared canvases with live cursors
-- [ ] **Export** — canvas to PDF and slide deck
 - [ ] **Card templates** — reusable prompt chains saved as presets
-- [x] **Test suite** — Vitest unit tests for canvas store, wired into GitHub Actions CI
 - [ ] **Mobile canvas gestures** — pinch to zoom, long-press toolbar
 
 ---
