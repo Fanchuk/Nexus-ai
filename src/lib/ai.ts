@@ -17,9 +17,7 @@ export const getTextModel = (name?: string | null) =>
 
 export const imageModel = google("gemini-3.1-flash-image-preview");
 
-export const embeddingModel = google.textEmbeddingModel("gemini-embedding-001", {
-  outputDimensionality: 768,
-});
+export const embeddingModel = google.textEmbeddingModel("gemini-embedding-001");
 
 export const imageProviderOptions = {
   google: { responseModalities: ["TEXT", "IMAGE"] },
