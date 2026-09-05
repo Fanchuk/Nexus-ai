@@ -1,6 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import { X, CheckCircle, XCircle, Info } from "lucide-react";
 import { useToastStore } from "@/stores/toast-store";
 
@@ -19,8 +20,13 @@ const borders = {
 export default function Toaster() {
   const toasts = useToastStore((state) => state.toasts);
   const remove = useToastStore((state) => state.remove);
+  const [mounted, setMounted] = useState(false);
 
-  if (typeof document === "undefined") return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return createPortal(
     <div className="fixed right-4 top-4 z-[9999] flex flex-col gap-2">
