@@ -15,7 +15,8 @@ export async function parseDocument(url: string, mime: string) {
   const buffer = Buffer.from(await res.arrayBuffer());
 
   if (mime === "application/pdf") {
-    const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const pdfParse = require("pdf-parse");
     const result = await pdfParse(buffer);
     return chunk(result.text);
   }
