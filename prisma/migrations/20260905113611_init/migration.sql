@@ -1,41 +1,17 @@
-/*
-  Warnings:
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "vector";
 
-  - You are about to drop the `Account` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Session` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Verification` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "CardType" AS ENUM ('WEB', 'CHART', 'IMAGE', 'DOC', 'RECS');
 
 -- CreateEnum
 CREATE TYPE "CardStatus" AS ENUM ('PENDING', 'STREAMING', 'DONE', 'ERROR');
 
--- DropForeignKey
-ALTER TABLE "Account" DROP CONSTRAINT "Account_userId_fkey";
+-- CreateEnum
+CREATE TYPE "FileKind" AS ENUM ('DOCUMENT', 'IMAGE', 'DATA');
 
--- DropForeignKey
-ALTER TABLE "Session" DROP CONSTRAINT "Session_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Settings" DROP CONSTRAINT "Settings_userId_fkey";
-
--- AlterTable
-ALTER TABLE "Settings" ALTER COLUMN "defaultMode" SET DEFAULT 'WEB';
-
--- DropTable
-DROP TABLE "Account";
-
--- DropTable
-DROP TABLE "Session";
-
--- DropTable
-DROP TABLE "User";
-
--- DropTable
-DROP TABLE "Verification";
+-- CreateEnum
+CREATE TYPE "FileStatus" AS ENUM ('PROCESSING', 'INDEXED', 'ERROR');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -97,6 +73,20 @@ CREATE TABLE "verification" (
 );
 
 -- CreateTable
+CREATE TABLE "Settings" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "accent" TEXT NOT NULL DEFAULT 'iris',
+    "showGrid" BOOLEAN NOT NULL DEFAULT true,
+    "textModel" TEXT NOT NULL DEFAULT 'balanced',
+    "imageStyle" TEXT NOT NULL DEFAULT 'cinematic',
+    "answerLang" TEXT NOT NULL DEFAULT 'en',
+    "defaultMode" TEXT NOT NULL DEFAULT 'WEB',
+
+    CONSTRAINT "Settings_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Canvas" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -139,11 +129,62 @@ CREATE TABLE "Prompt" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "canvasId" TEXT,
+    "cardId" TEXT,
     "mode" "CardType" NOT NULL,
     "text" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Prompt_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Usage" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "month" TEXT NOT NULL,
+    "textRequests" INTEGER NOT NULL DEFAULT 0,
+    "images" INTEGER NOT NULL DEFAULT 0,
+    "indexedPages" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Usage_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SearchCache" (
+    "query" TEXT NOT NULL,
+    "results" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "SearchCache_pkey" PRIMARY KEY ("query")
+);
+
+-- CreateTable
+CREATE TABLE "File" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "key" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "size" INTEGER NOT NULL,
+    "mime" TEXT NOT NULL,
+    "kind" "FileKind" NOT NULL,
+    "status" "FileStatus" NOT NULL DEFAULT 'INDEXED',
+    "pages" INTEGER,
+    "text" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "File_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Chunk" (
+    "id" TEXT NOT NULL,
+    "fileId" TEXT NOT NULL,
+    "page" INTEGER NOT NULL,
+    "text" TEXT NOT NULL,
+    "embedding" vector(3072),
+
+    CONSTRAINT "Chunk_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -162,7 +203,16 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Settings_userId_key" ON "Settings"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "CardEdge_sourceId_targetId_key" ON "CardEdge"("sourceId", "targetId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Usage_userId_month_key" ON "Usage"("userId", "month");
+
+-- CreateIndex
+CREATE INDEX "Chunk_fileId_idx" ON "Chunk"("fileId");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -193,3 +243,15 @@ ALTER TABLE "Prompt" ADD CONSTRAINT "Prompt_userId_fkey" FOREIGN KEY ("userId") 
 
 -- AddForeignKey
 ALTER TABLE "Prompt" ADD CONSTRAINT "Prompt_canvasId_fkey" FOREIGN KEY ("canvasId") REFERENCES "Canvas"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Prompt" ADD CONSTRAINT "Prompt_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "Card"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Usage" ADD CONSTRAINT "Usage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "File" ADD CONSTRAINT "File_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Chunk" ADD CONSTRAINT "Chunk_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "File"("id") ON DELETE CASCADE ON UPDATE CASCADE;

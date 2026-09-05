@@ -55,7 +55,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     await trackUsage(user.id, "indexedPages", pages.length);
 
     return NextResponse.json({ pages: pages.length, readTime });
-  } catch {
+  } catch (err) {
+    console.error("DOCUMENT ANALYZE ERROR:", err);
     await prisma.file.update({ where: { id: file.id }, data: { status: "ERROR" } });
     return NextResponse.json({ error: "Could not read the file" }, { status: 500 });
   }

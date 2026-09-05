@@ -210,7 +210,7 @@ model Chunk {
   file      File                         @relation(fields: [fileId], references: [id], onDelete: Cascade)
   page      Int
   text      String
-  embedding Unsupported("vector(768)")?
+  embedding Unsupported("vector(3072)")?
 
   @@index([fileId])
 }
