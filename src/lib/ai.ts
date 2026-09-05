@@ -1,6 +1,6 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createGoogle } from "@ai-sdk/google";
 
-const google = createGoogleGenerativeAI({
+const google = createGoogle({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
@@ -15,7 +15,7 @@ export const textModel = google(TEXT_MODELS.balanced);
 export const getTextModel = (name?: string | null) =>
   google(TEXT_MODELS[name ?? "balanced"] ?? TEXT_MODELS.balanced);
 
-export const imageModel = google("gemini-3-pro-image");
+export const imageModel = google("gemini-2.0-flash-preview-image-generation");
 
 export const embeddingModel = google.textEmbeddingModel("text-embedding-004");
 
